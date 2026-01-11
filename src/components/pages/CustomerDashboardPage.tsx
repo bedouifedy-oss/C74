@@ -1,0 +1,1259 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { DatePicker } from '@/components/ui/date-picker';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { LoadingSpinner, LoadingSkeleton, LoadingCard } from '@/components/ui/loading';
+import { withGlobalLoading } from '@/components/GlobalPageLoader';
+import { useLoadingState } from '@/hooks/useLoading';
+import { Textarea } from '@/components/ui/textarea';
+import { useLocale } from '@/hooks/useLocale';
+import {
+  Plus,
+  Search,
+  MapPin,
+  Calendar,
+  Clock,
+  CheckCircle,
+  PlayCircle,
+  Flag,
+  Wrench,
+  Zap,
+  Wind,
+  Sparkles,
+  Briefcase,
+  X,
+  MessageSquare
+} from 'lucide-react';
+import NotificationDropdown from '@/components/NotificationDropdown';
+import MessageModal from '@/components/MessageModal';
+import { HeaderMenu, getCustomerMenuItems } from '@/components/HeaderMenu';
+import { Link } from '@/lib/i18n';
+import { MobileBottomNav } from '@/components/MobileBottomNav';
+import { getWorkersByCategory, getAllWorkerCounts } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase';
+
+type CustomerJob = {
+  id: string;
+  title?: string;
+  category?: string;
+  description?: string;
+  budget?: number;
+  location?: string;
+  address?: string;
+  postedAt?: string;
+  created_at?: string;
+  status?: string;
+  applicantCount?: number;
+  applicant_count?: number;
+};
+
+const translations = {
+  en: {
+    dashboard: 'Customer Dashboard',
+    welcome: 'Welcome back!',
+    myJobs: 'My Jobs',
+    postNewJob: 'Post New Job',
+    activeJobs: 'Active Jobs',
+    completedJobs: 'Completed Jobs',
+    jobTitle: 'Job Title',
+    description: 'Description',
+    location: 'Location',
+    budget: 'Budget (TND)',
+    postJob: 'Post Job',
+    cancel: 'Cancel',
+    searchJobs: 'Search Jobs',
+    filter: 'Filter',
+    noJobs: 'No jobs posted yet',
+    postedOn: 'Posted on',
+    status: 'Status',
+    applicants: 'Applicants',
+    markInProgress: 'Mark In Progress',
+    markCompleted: 'Mark Completed',
+    cancelJob: 'Cancel Job',
+    statusUpdateConfirm: 'Are you sure you want to update the job status?',
+    jobUpdated: 'Job status updated successfully!',
+    updateError: 'Failed to update job status',
+    browseWorkers: 'Browse Workers',
+    category: 'Category',
+    plumbing: 'Plumbing',
+    electrical: 'Electrical',
+    ac: 'AC Maintenance',
+    cleaning: 'Cleaning',
+    selectCategory: 'Select category',
+    preferredDate: 'Preferred Date',
+    preferredTime: 'Preferred Time',
+    cancelJob: 'Cancel Job',
+    statusUpdateConfirm: 'Are you sure you want to update the job status?',
+    jobUpdated: 'Job status updated successfully!',
+    updateError: 'Failed to update job status'
+  },
+  fr: {
+    dashboard: 'Tableau de bord client',
+    welcome: 'Bon retour!',
+    myJobs: 'Mes emplois',
+    postNewJob: 'Publier un nouvel emploi',
+    activeJobs: 'Emplois actifs',
+    completedJobs: 'Emplois terminés',
+    jobTitle: "Titre de l'emploi",
+    description: 'Description',
+    location: 'Lieu',
+    budget: 'Budget (TND)',
+    postJob: 'Publier',
+    cancel: 'Annuler',
+    searchJobs: 'Rechercher des emplois',
+    filter: 'Filtrer',
+    noJobs: 'Aucun emploi publié yet',
+    postedOn: 'Publié le',
+    status: 'Statut',
+    applicants: 'Candidats',
+    markInProgress: 'Marquer en cours',
+    markCompleted: 'Marquer terminé',
+    cancelJob: "Annuler l'emploi",
+    statusUpdateConfirm: "Êtes-vous sûr de vouloir mettre à jour le statut de l'emploi?",
+    jobUpdated: "Statut de l'emploi mis à jour avec succès!",
+    updateError: "Échec de la mise à jour du statut de l'emploi",
+    browseWorkers: 'Parcourir les travailleurs',
+    category: 'Catégorie',
+    plumbing: 'Plomberie',
+    electrical: 'Électrique',
+    ac: 'Maintenance AC',
+    cleaning: 'Nettoyage',
+    selectCategory: 'Sélectionner une catégorie',
+    preferredDate: 'Date préférée',
+    preferredTime: 'Heure préférée'
+  },
+  'ar-TN': {
+    dashboard: 'لوحة تحكم العميل',
+    welcome: 'مرحباً بعودتك!',
+    myJobs: 'وظائفي',
+    postNewJob: 'نشر وظيفة جديدة',
+    activeJobs: 'الوظائف النشطة',
+    completedJobs: 'الوظائف المكتملة',
+    jobTitle: 'عنوان الوظيفة',
+    description: 'الوصف',
+    location: 'الموقع',
+    budget: 'الميزانية (دينار)',
+    postJob: 'نشر',
+    cancel: 'إلغاء',
+    searchJobs: 'البحث عن وظائف',
+    filter: 'تصفية',
+    noJobs: 'لم يتم نشر أي وظائف بعد',
+    postedOn: 'نشر في',
+    status: 'الحالة',
+    applicants: 'المتقدمون',
+    markInProgress: 'تحديد قيد التنفيذ',
+    markCompleted: 'تحديد مكتمل',
+    cancelJob: 'إلغاء الوظيفة',
+    statusUpdateConfirm: 'هل أنت متأكد من تحديث حالة الوظيفة؟',
+    jobUpdated: 'تم تحديث حالة الوظيفة بنجاح!',
+    updateError: 'فشل في تحديث حالة الوظيفة',
+    browseWorkers: 'تصفح العمال',
+    category: 'الفئة',
+    plumbing: 'السباكة',
+    electrical: 'الكهرباء',
+    ac: 'صيانة المكيف',
+    cleaning: 'التنظيف',
+    selectCategory: 'اختر الفئة',
+    preferredDate: 'التاريخ المفضل',
+    preferredTime: 'الوقت المفضل'
+  }
+};
+
+// No mock data - jobs fetched from real database
+
+function CustomerDashboardPage() {
+  const { locale, setLocale, isClient } = useLocale();
+  const t = translations[locale];
+  const [showPostForm, setShowPostForm] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [jobs, setJobs] = useState<CustomerJob[]>([]);
+  const [newJob, setNewJob] = useState({
+    title: '',
+    description: '',
+    location: '',
+    address_details: '',
+    category: 'plumbing' as const,
+    photos: [] as string[],
+    inspection_required: false,
+    price_after_inspection: false,
+    preferred_date: new Date().toISOString().split('T')[0],
+    preferred_time_slot: 'morning' as const
+  });
+  const [messageModalOpen, setMessageModalOpen] = useState(false);
+  const [messageUserId, setMessageUserId] = useState('');
+  const [messageUserName, setMessageUserName] = useState('');
+  const [workerCounts, setWorkerCounts] = useState({
+    plumbing: 0,
+    electrical: 0,
+    ac: 0,
+    cleaning: 0
+  });
+  
+  const { loading: jobsLoading, setLoading: setJobsLoading } = useLoadingState();
+  const { loading: countsLoading, setLoading: setCountsLoading } = useLoadingState();
+
+  // Check if user is logged in
+  useEffect(() => {
+    if (!isClient) return; // Skip on server
+
+    const token = localStorage.getItem('auth_token');
+    const userData = localStorage.getItem('user_data');
+
+    if (!token || !userData) {
+      window.location.href = `/${locale}/signup`;
+      return;
+    }
+
+    const user = JSON.parse(userData);
+    if (user.role !== 'customer') {
+      window.location.href = `/${locale}/worker/dashboard`;
+      return;
+    }
+  }, [isClient, locale]);
+
+  // Fetch jobs from API on component mount
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        setJobsLoading(true);
+        const token = localStorage.getItem('auth_token');
+        
+        const response = await fetch('/api/jobs', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch jobs');
+        }
+        
+        const data = await response.json();
+        setJobs(data.jobs || []);
+      } catch (error) {
+        console.error('Error fetching jobs:', error);
+        setJobs([]);
+      } finally {
+        setJobsLoading(false);
+      }
+    };
+
+    fetchJobs();
+  }, [locale]);
+
+  // Fetch worker counts for each category
+  useEffect(() => {
+    const fetchWorkerCounts = async () => {
+      try {
+        setCountsLoading(true);
+        console.log('[Dashboard] Fetching worker counts with optimized query...');
+        
+        // Single query to get all counts at once
+        const counts = await getAllWorkerCounts();
+        setWorkerCounts(counts);
+        
+      } catch (error) {
+        console.error('Error fetching worker counts:', error);
+        // Set default values if everything fails
+        setWorkerCounts({
+          plumbing: 0,
+          electrical: 0,
+          ac: 0,
+          cleaning: 0
+        });
+      } finally {
+        setCountsLoading(false);
+      }
+    };
+
+    if (isClient) {
+      fetchWorkerCounts();
+    }
+  }, [isClient]);
+
+  const handlePostJob = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch('/api/jobs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('auth_token')}`
+        },
+        body: JSON.stringify({
+          category: newJob.category,
+          description: newJob.description,
+          address: newJob.location,
+          address_details: newJob.address_details || '',
+          photos: newJob.photos || [],
+          inspection_required: newJob.inspection_required || false,
+          price_after_inspection: newJob.price_after_inspection || false,
+          preferred_date: newJob.preferred_date || new Date().toISOString().split('T')[0],
+          preferred_time_slot: newJob.preferred_time_slot || 'morning'
+        })
+      });
+
+      if (response.ok) {
+        // Refresh jobs list
+        const jobsResponse = await fetch('/api/jobs', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('auth_token')}`
+          }
+        });
+
+        if (jobsResponse.ok) {
+          const jobsData = await jobsResponse.json();
+          setJobs(jobsData.jobs);
+        }
+
+        setShowPostForm(false);
+        setNewJob({
+          title: '',
+          description: '',
+          location: '',
+          address_details: '',
+          category: 'plumbing' as const,
+          photos: [] as string[],
+          inspection_required: false,
+          price_after_inspection: false,
+          preferred_date: new Date().toISOString().split('T')[0],
+          preferred_time_slot: 'morning' as const
+        });
+        alert(
+          locale === 'ar-TN'
+            ? 'تم نشر الوظيفة بنجاح!'
+            : locale === 'fr'
+              ? 'Emploi publié avec succès!'
+              : 'Job posted successfully!'
+        );
+      } else {
+        const errorData = await response.json();
+        alert(errorData.error || 'Failed to post job');
+      }
+    } catch (error) {
+      console.error('Error posting job:', error);
+      alert('Network error. Please try again.');
+    }
+  };
+
+  const filteredJobs = jobs.filter((job) => {
+    const searchTermLower = searchTerm.toLowerCase();
+    const description = (job.description || '').toLowerCase();
+    const address = (job.address || job.location || '').toLowerCase();
+    const category = (job.category || '').toLowerCase();
+
+    return description.includes(searchTermLower) || address.includes(searchTermLower) || category.includes(searchTermLower);
+  });
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'open':
+        return 'bg-amber-100 text-amber-700';
+      case 'in_progress':
+        return 'bg-blue-100 text-blue-700';
+      case 'completed':
+        return 'bg-green-100 text-green-700';
+      case 'cancelled':
+        return 'bg-red-100 text-red-700';
+      default:
+        return 'bg-neutral-100 text-neutral-700';
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'open':
+        return locale === 'ar-TN' ? 'مفتوح' : locale === 'fr' ? 'Ouvert' : 'Open';
+      case 'in_progress':
+        return locale === 'ar-TN' ? 'قيد التنفيذ' : locale === 'fr' ? 'En cours' : 'In Progress';
+      case 'completed':
+        return locale === 'ar-TN' ? 'مكتمل' : locale === 'fr' ? 'Terminé' : 'Completed';
+      case 'cancelled':
+        return locale === 'ar-TN' ? 'ملغي' : locale === 'fr' ? 'Annulé' : 'Cancelled';
+      default:
+        return status;
+    }
+  };
+
+  const handleStatusUpdate = async (jobId: string, newStatus: string) => {
+    if (!confirm(t.statusUpdateConfirm)) return;
+
+    try {
+      const response = await fetch(`/api/jobs/${jobId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('auth_token')}`
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+
+      if (response.ok) {
+        setJobs((jobs) => jobs.map((job) => (job.id === jobId ? { ...job, status: newStatus as any } : job)));
+        alert(t.jobUpdated);
+      } else {
+        alert(t.updateError);
+      }
+    } catch (error) {
+      console.error('Error updating job status:', error);
+      alert(t.updateError);
+    }
+  };
+
+  // Extract inline function to avoid Turbopack parsing error
+  const getCurrentUserId = (): string => {
+    if (typeof window === 'undefined') return '';
+    try {
+      const userData = localStorage.getItem('user_data');
+      const user = userData ? JSON.parse(userData) : null;
+      return user?.id || '';
+    } catch {
+      return '';
+    }
+  };
+
+  return (
+    <>
+      {/* Header */}
+      <HeaderMenu
+        locale={locale}
+        onLocaleChange={setLocale}
+        menuItems={getCustomerMenuItems(locale, 'dashboard')}
+        title={t.dashboard}
+        subtitle={t.welcome}
+      />
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        {/* Browse Workers Section */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle>{t.browseWorkers}</CardTitle>
+            <CardDescription>
+              {locale === 'ar-TN'
+                ? 'ابحث عن محترفين مؤهلين لتنفيذ مشاريعك'
+                : locale === 'fr'
+                  ? 'Trouvez des professionnels vérifiés pour réaliser vos projets'
+                  : 'Find verified professionals to complete your projects'}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="text-center mb-6">
+              <p className="text-lg text-neutral-600 dark:text-neutral-400 mb-4">
+                {locale === 'ar-TN'
+                  ? 'اختر الفئة المناسبة واحصل على محترفين موثوقين'
+                  : locale === 'fr'
+                    ? 'Choisissez la catégorie appropriée et trouvez des professionnels vérifiés'
+                    : 'Choose the right category and get verified professionals'}
+              </p>
+              <Button onClick={() => (window.location.href = `/${locale}/customer/browse-workers`)}>
+                {locale === 'ar-TN' ? 'عرض جميع العمال' : locale === 'fr' ? 'Voir tous les travailleurs' : 'View All Workers'}
+              </Button>
+            </div>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div
+                  className="text-center p-4 bg-neutral-50 dark:bg-neutral-800 rounded-lg cursor-pointer hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
+                  onClick={() => (window.location.href = `/${locale}/customer/browse-workers?category=plumbing`)}
+                >
+                  <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <Wrench className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <h3 className="font-medium text-neutral-900 dark:text-neutral-100">
+                    {locale === 'ar-TN' ? 'سباكة' : locale === 'fr' ? 'Plomberie' : 'Plumbing'}
+                  </h3>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                    {workerCounts.plumbing} {locale === 'ar-TN' ? 'عامل' : locale === 'fr' ? workerCounts.plumbing === 1 ? 'travailleur' : 'travailleurs' : workerCounts.plumbing === 1 ? 'worker' : 'workers'}
+                  </p>
+                </div>
+
+                <div
+                  className="text-center p-4 bg-neutral-50 dark:bg-neutral-800 rounded-lg cursor-pointer hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
+                  onClick={() => (window.location.href = `/${locale}/customer/browse-workers?category=electrical`)}
+                >
+                  <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <Zap className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                  </div>
+                  <h3 className="font-medium text-neutral-900 dark:text-neutral-100">
+                    {locale === 'ar-TN' ? 'كهرباء' : locale === 'fr' ? 'Électricité' : 'Electrical'}
+                  </h3>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                    {workerCounts.electrical} {locale === 'ar-TN' ? 'عامل' : locale === 'fr' ? workerCounts.electrical === 1 ? 'travailleur' : 'travailleurs' : workerCounts.electrical === 1 ? 'worker' : 'workers'}
+                  </p>
+                </div>
+
+                <div
+                  className="text-center p-4 bg-neutral-50 dark:bg-neutral-800 rounded-lg cursor-pointer hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
+                  onClick={() => (window.location.href = `/${locale}/customer/browse-workers?category=ac`)}
+                >
+                  <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <Wind className="w-6 h-6 text-green-600 dark:text-green-400" />
+                  </div>
+                  <h3 className="font-medium text-neutral-900 dark:text-neutral-100">
+                    {locale === 'ar-TN' ? 'تكييف' : locale === 'fr' ? 'Climatisation' : 'AC Maintenance'}
+                  </h3>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                    {workerCounts.ac} {locale === 'ar-TN' ? 'عامل' : locale === 'fr' ? workerCounts.ac === 1 ? 'travailleur' : 'travailleurs' : workerCounts.ac === 1 ? 'worker' : 'workers'}
+                  </p>
+                </div>
+
+                <div
+                  className="text-center p-4 bg-neutral-50 dark:bg-neutral-800 rounded-lg cursor-pointer hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
+                  onClick={() => (window.location.href = `/${locale}/customer/browse-workers?category=cleaning`)}
+                >
+                  <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <Sparkles className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                  </div>
+                  <h3 className="font-medium text-neutral-900 dark:text-neutral-100">
+                    {locale === 'ar-TN' ? 'تنظيف' : locale === 'fr' ? 'Nettoyage' : 'Cleaning'}
+                  </h3>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                    {workerCounts.cleaning} {locale === 'ar-TN' ? 'عامل' : locale === 'fr' ? workerCounts.cleaning === 1 ? 'travailleur' : 'travailleurs' : workerCounts.cleaning === 1 ? 'worker' : 'workers'}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Jobs Section */}
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          {/* Actions Bar */}
+          <div className="flex flex-col sm:flex-row gap-4 mb-8">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute start-3 top-1/2 transform -translate-y-1/2 text-neutral-400 w-4 h-4" />
+                <Input
+                  id="job-search"
+                  name="job-search"
+                  type="text"
+                  placeholder={t.searchJobs}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="ps-10"
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Link href="/customer/jobs/new">
+              <Button className="flex items-center gap-2">
+                <Plus className="w-4 h-4" />
+                {t.postNewJob}
+              </Button>
+            </Link>
+          </div>
+        </div>
+
+          {/* Jobs List */}
+          {filteredJobs.length === 0 ? (
+            <div className="text-center py-12">
+              <div className="w-16 h-16 bg-neutral-100 dark:bg-neutral-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Briefcase className="w-8 h-8 text-neutral-400" />
+              </div>
+              <h3 className="text-lg font-medium text-neutral-900 dark:text-neutral-100 mb-2">{t.noJobs}</h3>
+              <p className="text-neutral-600 dark:text-neutral-400">
+                {locale === 'ar-TN'
+                  ? 'لم تقم بنشر أي وظائف بعد'
+                  : locale === 'fr'
+                    ? "Vous n'avez pas encore publié d'offres d'emploi"
+                    : 'You haven\'t posted any jobs yet'}
+              </p>
+              <Link href="/customer/jobs/new">
+                <Button>{t.postNewJob}</Button>
+              </Link>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredJobs.map((job) => {
+                const postedAt = job.postedAt ?? job.created_at;
+                const location = job.address || job.location || '';
+
+                return (
+                  <Card key={job.id} className="hover:shadow-md transition-shadow">
+                    <CardContent className="p-6">
+                      <div className="flex items-start justify-between mb-4">
+                        <div>
+                          <h3 className="font-semibold text-lg text-neutral-900 dark:text-neutral-100 mb-2">
+                            {job.title}
+                          </h3>
+                          <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-2">
+                            <MapPin className="w-4 h-4 inline mr-1" />
+                            {location}
+                          </p>
+                          <p className="text-xs text-neutral-500">
+                            <Calendar className="w-3 h-3 inline mr-1" />
+                            {postedAt ? new Date(postedAt).toLocaleDateString() : ''}
+                          </p>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleStatusUpdate(job.id, 'in_progress')}
+                            disabled={job.status === 'in_progress'}
+                          >
+                            {job.status === 'in_progress' ? (
+                              <>
+                                <PlayCircle className="w-4 h-4 mr-1" />
+                                {locale === 'ar-TN' ? 'قيد التنفيذ' : locale === 'fr' ? 'En cours' : 'In Progress'}
+                              </>
+                            ) : (
+                              <>
+                                <PlayCircle className="w-4 h-4 mr-1" />
+                                {locale === 'ar-TN' ? 'ابدأ' : locale === 'fr' ? 'Commencer' : 'Start'}
+                              </>
+                            )}
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleStatusUpdate(job.id, 'completed')}
+                            disabled={job.status === 'completed'}
+                          >
+                            {job.status === 'completed' ? (
+                              <>
+                                <CheckCircle className="w-4 h-4 mr-1" />
+                                {locale === 'ar-TN' ? 'مكتمل' : locale === 'fr' ? 'Terminé' : 'Completed'}
+                              </>
+                            ) : (
+                              <>
+                                <CheckCircle className="w-4 h-4 mr-1" />
+                                {locale === 'ar-TN' ? 'إنهاء' : locale === 'fr' ? 'Terminer' : 'Complete'}
+                              </>
+                            )}
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleStatusUpdate(job.id, 'cancelled')}
+                            disabled={job.status === 'cancelled'}
+                          >
+                            <X className="w-4 h-4 mr-1" />
+                            {locale === 'ar-TN' ? 'إلغاء' : locale === 'fr' ? 'Annuler' : 'Cancel'}
+                          </Button>
+                        </div>
+                      </div>
+                      <p className="text-neutral-700 dark:text-neutral-300 mb-4 line-clamp-2">
+                        {job.description}
+                      </p>
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-xs">
+                          {job.category}
+                        </span>
+                        <span className={`px-2 py-1 rounded-full text-xs ${
+                          job.status === 'active'
+                            ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
+                            : job.status === 'in_progress'
+                            ? 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200'
+                            : job.status === 'completed'
+                            ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200'
+                            : 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200'
+                        }`}>
+                          {job.status}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-neutral-500">
+                          {locale === 'ar-TN' ? 'مقدم:' : locale === 'fr' ? 'Postulé:' : 'Posted:'} {postedAt ? new Date(postedAt).toLocaleDateString() : ''}
+                        </span>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setMessageModalOpen(true);
+                              setMessageUserId(job.customer_id);
+                              setMessageUserName(job.customer_name || 'Customer');
+                            }}
+                          >
+                            <MessageSquare className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+      {/* Post Job Modal */}
+      {showPostForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <CardHeader>
+              <CardTitle>{t.postNewJob}</CardTitle>
+              <CardDescription>
+                {locale === 'ar-TN'
+                  ? 'نشر وظيفة جديدة وابحث عن محترفين'
+                  : locale === 'fr'
+                    ? "Publier une nouvelle offre d'emploi et trouver des professionnels"
+                    : 'Post a new job and find professionals'}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handlePostJob} className="space-y-4">
+                <div>
+                  <Label htmlFor="title">{t.jobTitle} *</Label>
+                  <Input
+                    id="title"
+                    value={newJob.title}
+                    onChange={(e) => setNewJob({ ...newJob, title: e.target.value })}
+                    placeholder={
+                      locale === 'ar-TN'
+                        ? 'مثال: إصلاح حمام في المطبخخ'
+                        : locale === 'fr'
+                          ? 'Exemple: Réparation de plomberie dans la cuisine'
+                          : 'Example: Plumbing repair in kitchen'
+                    }
+                    required
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="description">{t.description} *</Label>
+                  <Textarea
+                    id="description"
+                    value={newJob.description}
+                    onChange={(e) => setNewJob({ ...newJob, description: e.target.value })}
+                    placeholder={
+                      locale === 'ar-TN'
+                        ? 'صف المشكلة بالتفصيل...'
+                        : locale === 'fr'
+                          ? 'Décrivez le problème en détail...'
+                          : 'Describe the issue in detail...'
+                    }
+                    rows={4}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="location">{t.location} *</Label>
+                  <Input
+                    id="location"
+                    value={newJob.location}
+                    onChange={(e) => setNewJob({ ...newJob, location: e.target.value })}
+                    placeholder={
+                      locale === 'ar-TN'
+                        ? 'مثال: تونس، المنزه'
+                        : locale === 'fr'
+                          ? 'Exemple: Tunis, El Menzah'
+                          : 'Example: Tunis, El Menzah'
+                    }
+                    required
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="category">{t.category} *</Label>
+                  <Select value={newJob.category} onValueChange={(value) => setNewJob({ ...newJob, category: value as any })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder={t.selectCategory} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="plumbing">{t.plumbing}</SelectItem>
+                      <SelectItem value="electrical">{t.electrical}</SelectItem>
+                      <SelectItem value="ac">{t.ac}</SelectItem>
+                      <SelectItem value="cleaning">{t.cleaning}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="preferred_date">{t.preferredDate} *</Label>
+                  <DatePicker
+                    id="preferred_date"
+                    value={newJob.preferred_date}
+                    onChange={(date) => setNewJob({ ...newJob, preferred_date: date })}
+                    min={new Date().toISOString().split('T')[0]}
+                    className="w-full"
+                    locale={locale}
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="preferred_time_slot">{t.preferredTime} *</Label>
+                  <Select
+                    value={newJob.preferred_time_slot}
+                    onValueChange={(value) => setNewJob({ ...newJob, preferred_time_slot: value as any })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={
+                        locale === 'ar-TN' ? 'اختر الوقت' : locale === 'fr' ? 'Choisir l\'heure' : 'Select time'
+                      } />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="morning">
+                        {locale === 'ar-TN' ? 'صباحياً (9 صباحاً - 12 مساءً)' : locale === 'fr' ? 'Matin (9h - 12h)' : 'Morning (9AM - 12PM)'}
+                      </SelectItem>
+                      <SelectItem value="afternoon">
+                        {locale === 'ar-TN' ? 'بعد الظهر (12 مساءً - 5 مساءً)' : locale === 'fr' ? 'Après-midi (12h - 17h)' : 'Afternoon (12PM - 5PM)'}
+                      </SelectItem>
+                      <SelectItem value="evening">
+                        {locale === 'ar-TN' ? 'مساءً (5 مساءً - 8 مساءً)' : locale === 'fr' ? 'Soir (17h - 20h)' : 'Evening (5PM - 8PM)'}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="inspection_required"
+                      checked={newJob.inspection_required}
+                      onChange={(e) => setNewJob({ ...newJob, inspection_required: e.target.checked })}
+                      className="w-4 h-4 text-primary-600 border-neutral-300 rounded focus:ring-primary-500"
+                    />
+                    <Label htmlFor="inspection_required" className="text-sm">
+                      {locale === 'ar-TN'
+                        ? 'يتطلب فحصاً أولاً'
+                        : locale === 'fr'
+                          ? "Nécessite une inspection d'abord"
+                          : 'Requires inspection first'}
+                    </Label>
+                  </div>
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                    {locale === 'ar-TN'
+                      ? 'سيقوم العامل بزيارة الموقع أولاً لتحديد السعر'
+                      : locale === 'fr'
+                        ? "Le travailleur visitera d'abord le site pour déterminer le prix"
+                        : 'The worker will visit the site first to determine the price'
+                    }
+                  </p>
+                </div>
+
+                <div className="bg-neutral-50 dark:bg-neutral-700 p-3 rounded-lg">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-neutral-600 dark:text-neutral-400">
+                      {locale === 'ar-TN' ? 'التكلفة المقدرة' : locale === 'fr' ? 'Coût estimé' : 'Estimated Cost'}
+                    </span>
+                    <span className="font-bold text-primary-600 dark:text-primary-400">
+                      {locale === 'ar-TN'
+                        ? 'سيتم تحديده بعد التفاوض'
+                        : locale === 'fr'
+                          ? 'Sera déterminé après négociation'
+                          : 'Will be determined after negotiation'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-6">
+                <Button variant="outline" onClick={() => setShowPostForm(false)} className="flex-1">
+                  {t.cancel}
+                </Button>
+                <Button onClick={handlePostJob} className="flex-1">
+                  {t.postJob}
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Fixed UI Layer */}
+      <MessageModal
+        isOpen={messageModalOpen}
+        onClose={() => setMessageModalOpen(false)}
+        currentUserId={getCurrentUserId()}
+        otherUserId={messageUserId}
+        otherUserName={messageUserName}
+        locale={locale}
+      />
+
+      <MobileBottomNav locale={locale} userRole="customer" />
+    </>
+  );}
+          <div className="max-w-7xl mx-auto px-4 py-6">
+            <Card className="mb-8">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
+                      {locale === 'ar-TN'
+                        ? 'تصفح العمال المحترفين'
+                        : locale === 'fr'
+                          ? 'Parcourir les travailleurs professionnels'
+                          : 'Browse Professional Workers'}
+                    </h2>
+                    <p className="text-neutral-600 dark:text-neutral-400">
+                      {locale === 'ar-TN'
+                        ? 'ابحث عن محترفين موثوقين لاحتياجاتك'
+                        : locale === 'fr'
+                          ? 'Trouvez des professionnels vérifiés pour vos besoins'
+                          : 'Find verified professionals for your needs'}
+                    </p>
+                  </div>
+                  <Button onClick={() => (window.location.href = `/${locale}/customer/browse-workers`)}>
+                    {locale === 'ar-TN' ? 'عرض جميع العمال' : locale === 'fr' ? 'Voir tous les travailleurs' : 'View All Workers'}
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div
+                    className="text-center p-4 bg-neutral-50 dark:bg-neutral-800 rounded-lg cursor-pointer hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
+                    onClick={() => (window.location.href = `/${locale}/customer/browse-workers?category=plumbing`)}
+                  >
+                    <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <Wrench className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <h3 className="font-medium text-neutral-900 dark:text-neutral-100">
+                      {locale === 'ar-TN' ? 'سباكة' : locale === 'fr' ? 'Plomberie' : 'Plumbing'}
+                    </h3>
+                    <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                      {workerCounts.plumbing} {locale === 'ar-TN' ? 'عامل' : locale === 'fr' ? workerCounts.plumbing === 1 ? 'travailleur' : 'travailleurs' : workerCounts.plumbing === 1 ? 'worker' : 'workers'}
+                    </p>
+                  </div>
+
+                  <div
+                    className="text-center p-4 bg-neutral-50 dark:bg-neutral-800 rounded-lg cursor-pointer hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
+                    onClick={() => (window.location.href = `/${locale}/customer/browse-workers?category=electrical`)}
+                  >
+                    <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <Zap className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                    </div>
+                    <h3 className="font-medium text-neutral-900 dark:text-neutral-100">
+                      {locale === 'ar-TN' ? 'كهرباء' : locale === 'fr' ? 'Électricité' : 'Electrical'}
+                    </h3>
+                    <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                      {workerCounts.electrical} {locale === 'ar-TN' ? 'عامل' : locale === 'fr' ? workerCounts.electrical === 1 ? 'travailleur' : 'travailleurs' : workerCounts.electrical === 1 ? 'worker' : 'workers'}
+                    </p>
+                  </div>
+
+                  <div
+                    className="text-center p-4 bg-neutral-50 dark:bg-neutral-800 rounded-lg cursor-pointer hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
+                    onClick={() => (window.location.href = `/${locale}/customer/browse-workers?category=ac`)}
+                  >
+                    <div className="w-12 h-12 bg-cyan-100 dark:bg-cyan-900 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <Wind className="w-6 h-6 text-cyan-600 dark:text-cyan-400" />
+                    </div>
+                    <h3 className="font-medium text-neutral-900 dark:text-neutral-100">
+                      {locale === 'ar-TN' ? 'تكييف' : locale === 'fr' ? 'Climatisation' : 'AC Maintenance'}
+                    </h3>
+                    <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                      {workerCounts.ac} {locale === 'ar-TN' ? 'عامل' : locale === 'fr' ? workerCounts.ac === 1 ? 'travailleur' : 'travailleurs' : workerCounts.ac === 1 ? 'worker' : 'workers'}
+                    </p>
+                  </div>
+
+                  <div
+                    className="text-center p-4 bg-neutral-50 dark:bg-neutral-800 rounded-lg cursor-pointer hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
+                    onClick={() => (window.location.href = `/${locale}/customer/browse-workers?category=cleaning`)}
+                  >
+                    <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <Sparkles className="w-6 h-6 text-green-600 dark:text-green-400" />
+                    </div>
+                    <h3 className="font-medium text-neutral-900 dark:text-neutral-100">
+                      {locale === 'ar-TN' ? 'تنظيف' : locale === 'fr' ? 'Nettoyage' : 'Cleaning'}
+                    </h3>
+                    <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                      {workerCounts.cleaning} {locale === 'ar-TN' ? 'عامل' : locale === 'fr' ? workerCounts.cleaning === 1 ? 'travailleur' : 'travailleurs' : workerCounts.cleaning === 1 ? 'worker' : 'workers'}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="max-w-7xl mx-auto px-4 py-8">
+            {/* Actions Bar */}
+            <div className="flex flex-col sm:flex-row gap-4 mb-8">
+              <div className="flex-1">
+                <div className="relative">
+                  <Search className="absolute start-3 top-1/2 transform -translate-y-1/2 text-neutral-400 w-4 h-4" />
+                  <Input
+                    id="job-search"
+                    name="job-search"
+                    type="text"
+                    placeholder={t.searchJobs}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="ps-10"
+                  />
+                </div>
+              </div>
+              <Link href="/customer/jobs/new">
+                <Button className="flex items-center gap-2">
+                  <Plus className="w-4 h-4" />
+                  {t.postNewJob}
+                </Button>
+              </Link>
+            </div>
+
+            {/* Post Job Modal */}
+            {showPostForm && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                  <CardHeader>
+                    <CardTitle>{t.postNewJob}</CardTitle>
+                    <CardDescription>
+                      {locale === 'ar-TN'
+                        ? 'نشر وظيفة جديدة وابحث عن محترفين'
+                        : locale === 'fr'
+                          ? "Publier une nouvelle offre d'emploi et trouver des professionnels"
+                          : 'Post a new job and find professionals'}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <form onSubmit={handlePostJob} className="space-y-4">
+                      <div>
+                        <Label htmlFor="description">{t.description} *</Label>
+                        <Textarea
+                          id="description"
+                          value={newJob.description}
+                          onChange={(e) => setNewJob({ ...newJob, description: e.target.value })}
+                          placeholder={
+                            locale === 'ar-TN'
+                              ? 'صف المشكلة بالتفصيل...'
+                              : locale === 'fr'
+                                ? 'Décrivez le problème en détail...'
+                                : 'Describe the issue in detail...'
+                          }
+                          rows={4}
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <Label htmlFor="location">{t.location} *</Label>
+                        <Input
+                          id="location"
+                          value={newJob.location}
+                          onChange={(e) => setNewJob({ ...newJob, location: e.target.value })}
+                          placeholder={
+                            locale === 'ar-TN'
+                              ? 'مثال: تونس، المنزه'
+                              : locale === 'fr'
+                                ? 'Exemple: Tunis, El Menzah'
+                                : 'Example: Tunis, El Menzah'
+                          }
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <Label htmlFor="address_details">
+                          {locale === 'ar-TN'
+                            ? 'تفاصيل العنوان'
+                            : locale === 'fr'
+                              ? "Détails de l'adresse"
+                              : 'Address Details'}
+                        </Label>
+                        <Input
+                          id="address_details"
+                          value={newJob.address_details}
+                          onChange={(e) => setNewJob({ ...newJob, address_details: e.target.value })}
+                          placeholder={
+                            locale === 'ar-TN'
+                              ? 'الطابق، رقم الشقة، معالم إضافية'
+                              : locale === 'fr'
+                                ? "Étage, numéro d'appartement, repères supplémentaires"
+                                : 'Floor, apartment number, additional landmarks'
+                          }
+                        />
+                      </div>
+
+                      <div>
+                        <Label htmlFor="preferred_date">
+                          {locale === 'ar-TN' ? 'التاريخ المفضل' : locale === 'fr' ? 'Date préférée' : 'Preferred Date'} *
+                        </Label>
+                        <DatePicker
+                          id="preferred_date"
+                          value={newJob.preferred_date}
+                          onChange={(date) => setNewJob({ ...newJob, preferred_date: date })}
+                          min={new Date().toISOString().split('T')[0]}
+                          className="w-full"
+                          locale={locale}
+                        />
+                      </div>
+
+                      <div>
+                        <Label htmlFor="preferred_time_slot">
+                          {locale === 'ar-TN' ? 'الوقت المفضل' : locale === 'fr' ? 'Créneau horaire préféré' : 'Preferred Time'} *
+                        </Label>
+                        <Select
+                          value={newJob.preferred_time_slot}
+                          onValueChange={(value) => setNewJob({ ...newJob, preferred_time_slot: value as any })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder={
+                              locale === 'ar-TN' ? 'اختر الوقت' : locale === 'fr' ? 'Choisir l\'heure' : 'Select time'
+                            } />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="morning">
+                              {locale === 'ar-TN' ? 'صباحياً (9 صباحاً - 12 مساءً)' : locale === 'fr' ? 'Matin (9h - 12h)' : 'Morning (9AM - 12PM)'}
+                            </SelectItem>
+                            <SelectItem value="afternoon">
+                              {locale === 'ar-TN' ? 'بعد الظهر (12 مساءً - 5 مساءً)' : locale === 'fr' ? 'Après-midi (12h - 17h)' : 'Afternoon (12PM - 5PM)'}
+                            </SelectItem>
+                            <SelectItem value="evening">
+                              {locale === 'ar-TN' ? 'مساءً (5 مساءً - 8 مساءً)' : locale === 'fr' ? 'Soir (17h - 20h)' : 'Evening (5PM - 8PM)'}
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="checkbox"
+                            id="inspection_required"
+                            checked={newJob.inspection_required}
+                            onChange={(e) => setNewJob({ ...newJob, inspection_required: e.target.checked })}
+                            className="w-4 h-4 text-primary-600 border-neutral-300 rounded focus:ring-primary-500"
+                          />
+                          <Label htmlFor="inspection_required" className="text-sm">
+                            {locale === 'ar-TN'
+                              ? 'يتطلب فحصاً أولاً'
+                              : locale === 'fr'
+                                ? "Nécessite une inspection d'abord"
+                                : 'Requires inspection first'}
+                          </Label>
+                        </div>
+                        <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                          {locale === 'ar-TN'
+                            ? 'سيقوم العامل بزيارة الموقع أولاً لتحديد السعر'
+                            : locale === 'fr'
+                              ? "Le travailleur visitera d'abord le site pour déterminer le prix"
+                              : 'Worker will visit the site first to determine the price'}
+                        </p>
+                      </div>
+
+                      <div className="flex gap-4">
+                        <Button type="submit" className="flex-1">
+                          {t.postJob}
+                        </Button>
+                        <Button type="button" variant="outline" onClick={() => setShowPostForm(false)} className="flex-1">
+                          {t.cancel}
+                        </Button>
+                      </div>
+                    </form>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+
+            {/* Jobs List */}
+            {filteredJobs.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="w-16 h-16 bg-neutral-100 dark:bg-neutral-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Search className="w-8 h-8 text-neutral-400" />
+                </div>
+                <h3 className="text-lg font-medium text-neutral-900 dark:text-neutral-100 mb-2">{t.noJobs}</h3>
+                <p className="text-neutral-600 dark:text-neutral-400 mb-4">
+                  {locale === 'ar-TN'
+                    ? 'ابدأ بنشر وظيفتك الأولى'
+                    : locale === 'fr'
+                      ? "Commencez par publier votre première offre d'emploi"
+                      : 'Start by posting your first job'}
+                </p>
+                <Link href="/customer/jobs/new">
+                  <Button>{t.postNewJob}</Button>
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {filteredJobs.map((job) => {
+                  const status = job.status ?? 'open';
+                  const applicantCount = job.applicantCount ?? job.applicant_count ?? 0;
+                  const postedAt = job.postedAt ?? job.created_at;
+                  const location = job.address || job.location || '';
+
+                  return (
+                    <Card key={job.id} className="hover:shadow-md transition-shadow">
+                      <CardContent className="p-6">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="flex-1">
+                            <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-2">
+                              {job.title || `${job.category} - ${location}`}
+                            </h3>
+                            <p className="text-neutral-600 dark:text-neutral-400 mb-4 line-clamp-2">{job.description}</p>
+                            <div className="flex flex-wrap gap-4 text-sm text-neutral-500 dark:text-neutral-400">
+                              <div className="flex items-center gap-1">
+                                <MapPin className="w-4 h-4" />
+                                {location}
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Calendar className="w-4 h-4" />
+                                {t.postedOn} {postedAt ? new Date(postedAt).toLocaleDateString(locale) : '-'}
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Clock className="w-4 h-4" />
+                                {applicantCount} {t.applicants}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex flex-col gap-2 items-end">
+                            <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(status)}`}>
+                              {getStatusLabel(status)}
+                            </span>
+                            <p className="text-lg font-bold text-primary-600 dark:text-primary-400">TND {job.budget ?? '-'}</p>
+                            <div className="flex flex-col gap-2 items-end">
+                              {status === 'open' && applicantCount > 0 && (
+                                <Button size="sm" onClick={() => handleStatusUpdate(job.id, 'in_progress')} className="w-full">
+                                  <PlayCircle className="w-4 h-4 me-2" />
+                                  {t.markInProgress}
+                                </Button>
+                              )}
+                              {status === 'in_progress' && (
+                                <Button size="sm" onClick={() => handleStatusUpdate(job.id, 'completed')} className="w-full">
+                                  <CheckCircle className="w-4 h-4 me-2" />
+                                  {t.markCompleted}
+                                </Button>
+                              )}
+                              {(status === 'open' || status === 'in_progress') && (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleStatusUpdate(job.id, 'cancelled')}
+                                  className="w-full"
+                                >
+                                  <Flag className="w-4 h-4 me-2" />
+                                  {t.cancelJob}
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Message Modal */}
+      <MessageModal
+        isOpen={messageModalOpen}
+        onClose={() => setMessageModalOpen(false)}
+        currentUserId={getCurrentUserId()}
+        otherUserId={messageUserId}
+        otherUserName={messageUserName}
+        locale={locale}
+      />
+
+      {/* Mobile Bottom Navigation */}
+      <MobileBottomNav locale={locale} userRole="customer" />
+    </>
+  );
+}
+
+// Export with HOC for automatic loading
+export default withGlobalLoading(CustomerDashboardPage, {
+  minLoadingTime: 1200,
+  showSpinner: true
+});

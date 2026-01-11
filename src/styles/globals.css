@@ -1,0 +1,282 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+// C74 Base Styles
+// Professional typography and layout foundation
+// ============================================ */
+
+@layer base {
+  :root {
+    --background: 210 40% 98%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 160 84% 39%; /* Emerald green #10B981 */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217 91% 60%; /* Trust blue #3B82F6 */
+    --secondary-foreground: 0 0% 100%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 38 92% 50%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 160 84% 39%;
+    --radius: 0.75rem;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 160 84% 39%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 38 92% 50%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 217.2 91.2% 59.8%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+/* Base typography and layout */
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* Typography improvements */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+  
+  h1 {
+    @apply text-4xl md:text-5xl;
+  }
+  
+  h2 {
+    @apply text-3xl md:text-4xl;
+  }
+  
+  h3 {
+    @apply text-2xl md:text-3xl;
+  }
+  
+  h4 {
+    @apply text-xl md:text-2xl;
+  }
+  
+  h5 {
+    @apply text-lg md:text-xl;
+  }
+  
+  h6 {
+    @apply text-base md:text-lg;
+  }
+  
+  /* Form elements */
+  button, input, textarea, select {
+    @apply focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+  }
+  
+  /* Links */
+  a {
+    @apply text-primary-600 hover:text-primary-700 transition-colors;
+  }
+  
+  /* Focus styles */
+  :focus-visible {
+    @apply ring-2 ring-ring ring-offset-2 outline-none;
+  }
+}
+
+/* RTL Support - Only applies when dir="rtl" is set on html element */
+@layer base {
+  [dir="rtl"] {
+    direction: rtl;
+    text-align: right;
+  }
+  
+  /* LTR default - ensure LTR pages are not affected */
+  [dir="ltr"] {
+    direction: ltr;
+    text-align: left;
+  }
+  
+  [dir="rtl"] .rtl\:space-x-reverse > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-x-reverse: 1;
+  }
+  
+  /* Keep certain elements LTR (numbers, phone inputs, codes) */
+  [dir="rtl"] .ltr-force,
+  [dir="rtl"] input[type="tel"],
+  [dir="rtl"] .otp-input {
+    direction: ltr;
+    text-align: left;
+  }
+  
+  /* RTL margins and paddings use logical properties */
+  [dir="rtl"] .ms-auto {
+    margin-inline-start: auto;
+  }
+  
+  [dir="rtl"] .me-auto {
+    margin-inline-end: auto;
+  }
+  
+  :lang(ar), :lang(ar-TN) {
+    font-family: 'Noto Sans Arabic', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.8;
+  }
+  
+  /* RTL overrides for shadcn/ui physical classes */
+  html[dir="rtl"] .mr-2 { margin-inline-start: 0.5rem !important; margin-inline-end: 0 !important; }
+  html[dir="rtl"] .ml-2 { margin-inline-end: 0.5rem !important; margin-inline-start: 0 !important; }
+  html[dir="rtl"] .mr-4 { margin-inline-start: 1rem !important; margin-inline-end: 0 !important; }
+  html[dir="rtl"] .ml-4 { margin-inline-end: 1rem !important; margin-inline-start: 0 !important; }
+  html[dir="rtl"] .text-left { text-align: start !important; }
+  html[dir="rtl"] .text-right { text-align: end !important; }
+  html[dir="rtl"] .right-0 { inset-inline-end: 0 !important; inset-inline-start: auto !important; }
+  html[dir="rtl"] .right-2 { inset-inline-end: 0.5rem !important; inset-inline-start: auto !important; }
+  html[dir="rtl"] .right-4 { inset-inline-end: 1rem !important; inset-inline-start: auto !important; }
+  html[dir="rtl"] .left-0 { inset-inline-start: 0 !important; inset-inline-end: auto !important; }
+  html[dir="rtl"] .left-2 { inset-inline-start: 0.5rem !important; inset-inline-end: auto !important; }
+  html[dir="rtl"] .left-4 { inset-inline-start: 1rem !important; inset-inline-end: auto !important; }
+  html[dir="rtl"] .pl-8 { padding-inline-start: 2rem !important; padding-inline-end: 0 !important; }
+  html[dir="rtl"] .pr-8 { padding-inline-end: 2rem !important; padding-inline-start: 0 !important; }
+  html[dir="rtl"] .pl-2 { padding-inline-start: 0.5rem !important; }
+  html[dir="rtl"] .pr-2 { padding-inline-end: 0.5rem !important; }
+}
+
+/* Utility classes */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .text-pretty {
+    text-wrap: pretty;
+  }
+  
+  /* Custom scrollbar */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted-foreground) / 0.3);
+    border-radius: 3px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--muted-foreground) / 0.5);
+  }
+}
+
+/* Component styles */
+@layer components {
+  /* Glass morphism effect */
+  .glass {
+    @apply bg-white/80 backdrop-blur-md border border-white/20;
+  }
+  
+  .glass-dark {
+    @apply bg-black/80 backdrop-blur-md border border-white/10;
+  }
+  
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent;
+  }
+  
+  /* Card hover effects */
+  .card-hover {
+    @apply transition-all duration-200 hover:shadow-lg hover:-translate-y-1;
+  }
+  
+  /* Button animations */
+  .btn-scale {
+    @apply transition-transform duration-200 active:scale-95;
+  }
+  
+  /* Loading states */
+  .loading-shimmer {
+    @apply animate-pulse bg-muted;
+  }
+  
+  /* Focus states */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+  }
+
+  /* Accessibility improvements for better contrast */
+  .btn-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm font-semibold;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-sm font-semibold;
+  }
+  
+  .text-primary-contrast {
+    @apply text-neutral-900 font-medium;
+  }
+  
+  .text-secondary-contrast {
+    @apply text-neutral-700 font-medium;
+  }
+}

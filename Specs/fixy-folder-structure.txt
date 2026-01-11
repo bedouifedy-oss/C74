@@ -1,0 +1,385 @@
+c74-tn/
+├── .env.local                          # Environment variables
+├── .eslintrc.json                      # ESLint config
+├── .gitignore                          # Git ignore
+├── next.config.js                      # Next.js config
+├── package.json                        # Dependencies
+├── postcss.config.js                   # PostCSS config
+├── tailwind.config.ts                  # Tailwind config (CREATED ABOVE)
+├── tsconfig.json                       # TypeScript config
+├── i18n.ts                             # i18n config (CREATED EARLIER)
+├── middleware.ts                       # i18n middleware (CREATED EARLIER)
+│
+├── public/                             # Static files
+│   ├── favicon.ico
+│   ├── logo.svg
+│   ├── images/
+│   │   ├── placeholders/
+│   │   │   ├── worker-avatar.png
+│   │   │   └── no-image.png
+│   │   └── categories/
+│   │       ├── plumbing.svg
+│   │       ├── electrical.svg
+│   │       ├── ac.svg
+│   │       └── cleaning.svg
+│   └── fonts/                          # Optional custom fonts
+│
+├── src/
+│   ├── app/                            # Next.js App Router
+│   │   ├── [locale]/                   # Localized routes
+│   │   │   ├── layout.tsx              # Root layout with i18n
+│   │   │   ├── page.tsx                # Homepage
+│   │   │   ├── loading.tsx             # Loading state
+│   │   │   ├── error.tsx               # Error boundary
+│   │   │   │
+│   │   │   ├── (auth)/                 # Auth routes group
+│   │   │   │   ├── login/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── signup/
+│   │   │   │       └── page.tsx
+│   │   │   │
+│   │   │   ├── (customer)/             # Customer routes group
+│   │   │   │   ├── dashboard/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── jobs/
+│   │   │   │   │   ├── page.tsx        # List jobs
+│   │   │   │   │   ├── new/
+│   │   │   │   │   │   └── page.tsx    # Create job
+│   │   │   │   │   └── [id]/
+│   │   │   │   │       └── page.tsx    # Job details
+│   │   │   │   ├── workers/
+│   │   │   │   │   ├── page.tsx        # Search workers
+│   │   │   │   │   └── [id]/
+│   │   │   │   │       └── page.tsx    # Worker profile
+│   │   │   │   └── inbox/
+│   │   │   │       └── page.tsx
+│   │   │   │
+│   │   │   ├── (worker)/               # Worker routes group
+│   │   │   │   ├── dashboard/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── profile/
+│   │   │   │   │   ├── page.tsx        # View/edit profile
+│   │   │   │   │   └── setup/
+│   │   │   │   │       └── page.tsx    # Initial setup
+│   │   │   │   ├── jobs/
+│   │   │   │   │   ├── page.tsx        # Available jobs
+│   │   │   │   │   ├── active/
+│   │   │   │   │   │   └── page.tsx    # Active jobs
+│   │   │   │   │   └── [id]/
+│   │   │   │   │       └── page.tsx    # Job details
+│   │   │   │   ├── availability/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── fees/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── inbox/
+│   │   │   │       └── page.tsx
+│   │   │   │
+│   │   │   ├── (admin)/                # Admin routes group
+│   │   │   │   ├── layout.tsx          # Admin layout
+│   │   │   │   ├── dashboard/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── workers/
+│   │   │   │   │   ├── page.tsx        # List workers
+│   │   │   │   │   ├── pending/
+│   │   │   │   │   │   └── page.tsx    # Verification queue
+│   │   │   │   │   └── [id]/
+│   │   │   │   │       └── page.tsx    # Worker details
+│   │   │   │   ├── jobs/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── disputes/
+│   │   │   │   │   ├── page.tsx
+│   │   │   │   │   └── [id]/
+│   │   │   │   │       └── page.tsx
+│   │   │   │   ├── fees/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── reviews/
+│   │   │   │       └── page.tsx
+│   │   │   │
+│   │   │   └── settings/
+│   │   │       └── page.tsx
+│   │   │
+│   │   └── api/                        # API Routes (no locale)
+│   │       ├── auth/
+│   │       │   ├── signup/
+│   │       │   │   └── route.ts
+│   │       │   ├── verify-otp/
+│   │       │   │   └── route.ts
+│   │       │   └── logout/
+│   │       │       └── route.ts
+│   │       ├── workers/
+│   │       │   ├── route.ts            # GET /api/workers (search)
+│   │       │   ├── [id]/
+│   │       │   │   └── route.ts        # GET/PATCH /api/workers/:id
+│   │       │   ├── availability/
+│   │       │   │   └── route.ts
+│   │       │   └── profile/
+│   │       │       └── route.ts
+│   │       ├── jobs/
+│   │       │   ├── route.ts            # GET/POST /api/jobs
+│   │       │   ├── [id]/
+│   │       │   │   ├── route.ts        # GET/PATCH /api/jobs/:id
+│   │       │   │   ├── accept/
+│   │       │   │   │   └── route.ts
+│   │       │   │   ├── reject/
+│   │       │   │   │   └── route.ts
+│   │       │   │   ├── cancel/
+│   │       │   │   │   └── route.ts
+│   │       │   │   ├── complete/
+│   │       │   │   │   └── route.ts
+│   │       │   │   ├── propose-price/
+│   │       │   │   │   └── route.ts
+│   │       │   │   ├── accept-price/
+│   │       │   │   │   └── route.ts
+│   │       │   │   ├── messages/
+│   │       │   │   │   └── route.ts
+│   │       │   │   ├── guarantee/
+│   │       │   │   │   └── route.ts
+│   │       │   │   └── dispute/
+│   │       │   │       └── route.ts
+│   │       │   └── nearby/
+│   │       │       └── route.ts
+│   │       ├── reviews/
+│   │       │   ├── route.ts
+│   │       │   └── [id]/
+│   │       │       ├── route.ts
+│   │       │       └── flag/
+│   │       │           └── route.ts
+│   │       ├── fees/
+│   │       │   └── route.ts
+│   │       ├── disputes/
+│   │       │   ├── route.ts
+│   │       │   └── [id]/
+│   │       │       └── route.ts
+│   │       ├── notifications/
+│   │       │   ├── route.ts
+│   │       │   └── [id]/
+│   │       │       └── read/
+│   │       │           └── route.ts
+│   │       ├── upload/
+│   │       │   └── route.ts            # File upload handler
+│   │       ├── admin/
+│   │       │   ├── workers/
+│   │       │   │   ├── route.ts
+│   │       │   │   └── [id]/
+│   │       │   │       ├── approve/
+│   │       │   │       │   └── route.ts
+│   │       │   │       ├── reject/
+│   │       │   │       │   └── route.ts
+│   │       │   │       ├── suspend/
+│   │       │   │       │   └── route.ts
+│   │       │   │       └── strike/
+│   │       │   │           └── route.ts
+│   │       │   ├── disputes/
+│   │       │   │   └── [id]/
+│   │       │   │       └── resolve/
+│   │       │   │           └── route.ts
+│   │       │   └── fees/
+│   │       │       └── [id]/
+│   │       │           └── mark-paid/
+│   │       │               └── route.ts
+│   │       └── cron/                   # Vercel Cron jobs
+│   │           ├── weekly-invoices/
+│   │           │   └── route.ts
+│   │           └── overdue-fees/
+│   │               └── route.ts
+│   │
+│   ├── components/                     # React Components
+│   │   ├── ui/                         # ShadCN UI components
+│   │   │   ├── button.tsx
+│   │   │   ├── card.tsx
+│   │   │   ├── input.tsx
+│   │   │   ├── label.tsx
+│   │   │   ├── badge.tsx
+│   │   │   ├── avatar.tsx
+│   │   │   ├── dialog.tsx
+│   │   │   ├── dropdown-menu.tsx
+│   │   │   ├── select.tsx
+│   │   │   ├── textarea.tsx
+│   │   │   ├── toast.tsx
+│   │   │   ├── tabs.tsx
+│   │   │   ├── table.tsx
+│   │   │   ├── calendar.tsx
+│   │   │   └── skeleton.tsx
+│   │   │
+│   │   ├── layout/                     # Layout components
+│   │   │   ├── Header.tsx
+│   │   │   ├── Footer.tsx
+│   │   │   ├── Sidebar.tsx
+│   │   │   ├── MobileNav.tsx
+│   │   │   ├── BottomNav.tsx
+│   │   │   └── Container.tsx
+│   │   │
+│   │   ├── auth/                       # Auth components
+│   │   │   ├── LoginForm.tsx
+│   │   │   ├── SignupForm.tsx
+│   │   │   ├── OTPInput.tsx
+│   │   │   └── RoleSelector.tsx
+│   │   │
+│   │   ├── jobs/                       # Job components
+│   │   │   ├── JobCard.tsx             # WILL CREATE
+│   │   │   ├── JobList.tsx
+│   │   │   ├── JobForm.tsx
+│   │   │   ├── JobDetails.tsx
+│   │   │   ├── JobStatusBadge.tsx
+│   │   │   ├── JobFilters.tsx
+│   │   │   └── EmptyJobsState.tsx
+│   │   │
+│   │   ├── workers/                    # Worker components
+│   │   │   ├── WorkerCard.tsx          # WILL CREATE
+│   │   │   ├── WorkerList.tsx
+│   │   │   ├── WorkerProfile.tsx
+│   │   │   ├── WorkerSearch.tsx
+│   │   │   ├── WorkerFilters.tsx
+│   │   │   ├── WorkerStats.tsx
+│   │   │   ├── AvailabilityCalendar.tsx
+│   │   │   └── WorkerSetupWizard.tsx
+│   │   │
+│   │   ├── messages/                   # Chat/Messaging
+│   │   │   ├── ChatBox.tsx             # WILL CREATE
+│   │   │   ├── MessageBubble.tsx
+│   │   │   ├── MessageList.tsx
+│   │   │   ├── MessageInput.tsx
+│   │   │   ├── PriceProposalBubble.tsx
+│   │   │   └── ConversationList.tsx
+│   │   │
+│   │   ├── reviews/                    # Review components
+│   │   │   ├── ReviewCard.tsx
+│   │   │   ├── ReviewForm.tsx
+│   │   │   ├── ReviewList.tsx
+│   │   │   ├── RatingStars.tsx
+│   │   │   └── RatingDistribution.tsx
+│   │   │
+│   │   ├── guarantee/                  # Guarantee components
+│   │   │   ├── GuaranteeForm.tsx
+│   │   │   ├── GuaranteeCard.tsx
+│   │   │   └── GuaranteeStatusBadge.tsx
+│   │   │
+│   │   ├── disputes/                   # Dispute components
+│   │   │   ├── DisputeForm.tsx
+│   │   │   ├── DisputeCard.tsx
+│   │   │   └── DisputeTimeline.tsx
+│   │   │
+│   │   ├── fees/                       # Fee components
+│   │   │   ├── FeeCard.tsx
+│   │   │   ├── InvoiceDetails.tsx
+│   │   │   └── PaymentProofUpload.tsx
+│   │   │
+│   │   ├── admin/                      # Admin components
+│   │   │   ├── AdminStats.tsx
+│   │   │   ├── WorkerVerificationCard.tsx
+│   │   │   ├── DisputeManager.tsx
+│   │   │   ├── FeeManager.tsx
+│   │   │   ├── ReviewModerator.tsx
+│   │   │   └── StrikeManager.tsx
+│   │   │
+│   │   └── shared/                     # Shared/utility components
+│   │       ├── LanguageSwitcher.tsx    # CREATED EARLIER
+│   │       ├── Avatar.tsx
+│   │       ├── Badge.tsx
+│   │       ├── LoadingSpinner.tsx
+│   │       ├── EmptyState.tsx
+│   │       ├── ErrorState.tsx
+│   │       ├── FileUpload.tsx
+│   │       ├── ImageGallery.tsx
+│   │       ├── DatePicker.tsx
+│   │       ├── TimeSlotPicker.tsx
+│   │       ├── PhoneInput.tsx
+│   │       ├── AddressInput.tsx
+│   │       ├── NotificationBadge.tsx
+│   │       └── ConfirmDialog.tsx
+│   │
+│   ├── lib/                            # Utility libraries
+│   │   ├── utils.ts                    # cn() helper, misc utils
+│   │   ├── api.ts                      # API client
+│   │   ├── supabase.ts                 # Supabase client
+│   │   ├── auth.ts                     # Auth helpers
+│   │   ├── validations.ts              # Zod schemas
+│   │   ├── constants.ts                # App constants
+│   │   ├── i18n-utils.ts               # CREATED EARLIER
+│   │   └── sms.ts                      # SMS provider integration
+│   │
+│   ├── hooks/                          # Custom React hooks
+│   │   ├── useAuth.ts                  # Auth state hook
+│   │   ├── useUser.ts                  # User data hook
+│   │   ├── useJobs.ts                  # Jobs data hook
+│   │   ├── useWorkers.ts               # Workers data hook
+│   │   ├── useMessages.ts              # Messages/chat hook
+│   │   ├── useNotifications.ts         # Notifications hook
+│   │   ├── useMediaQuery.ts            # Responsive hook
+│   │   └── useDebounce.ts              # Debounce hook
+│   │
+│   ├── store/                          # State management (Zustand)
+│   │   ├── authStore.ts                # Auth state
+│   │   ├── jobStore.ts                 # Job state
+│   │   └── notificationStore.ts        # Notification state
+│   │
+│   ├── types/                          # TypeScript types
+│   │   ├── database.ts                 # Database types (auto-generated)
+│   │   ├── api.ts                      # API types
+│   │   ├── user.ts                     # User types
+│   │   ├── job.ts                      # Job types
+│   │   ├── worker.ts                   # Worker types
+│   │   └── index.ts                    # Barrel exports
+│   │
+│   └── styles/                         # Global styles
+│       └── globals.css                 # Tailwind + custom CSS
+│
+├── messages/                           # i18n translations (CREATED EARLIER)
+│   ├── en.json
+│   ├── fr.json
+│   └── ar-TN.json
+│
+├── supabase/                           # Supabase files
+│   ├── migrations/                     # SQL migrations
+│   │   ├── 001_initial_schema.sql
+│   │   ├── 002_add_indexes.sql
+│   │   └── 003_rls_policies.sql
+│   └── seed.sql                        # Seed data
+│
+└── scripts/                            # Utility scripts
+    ├── generate-types.ts               # Generate DB types
+    └── seed-dev.ts                     # Seed dev database
+
+# ============================================
+# INSTALLATION COMMANDS
+# ============================================
+
+# Initialize Next.js with TypeScript
+npx create-next-app@latest c74-tn --typescript --tailwind --app --src-dir
+
+# Install ShadCN UI
+npx shadcn-ui@latest init
+
+# Install i18n
+npm install next-intl
+
+# Install RTL support
+npm install tailwindcss-rtl -D
+
+# Install form handling
+npm install react-hook-form @hookform/resolvers zod
+
+# Install Supabase
+npm install @supabase/supabase-js
+
+# Install state management
+npm install zustand
+
+# Install utilities
+npm install clsx tailwind-merge
+npm install date-fns
+npm install lucide-react
+
+# Install dev dependencies
+npm install -D @types/node
+
+# ============================================
+# NEXT STEPS
+# ============================================
+
+1. Run: npx shadcn-ui@latest init
+2. Add base components:
+   npx shadcn-ui@latest add button card input label badge avatar
+3. Create folder structure (copy from above)
+4. Copy Tailwind config
+5. Start building components

@@ -1,0 +1,46 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/check-overdue-fees",
+      "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/cron/weekly-invoices", 
+      "schedule": "0 18 * * 5"
+    },
+    {
+      "path": "/api/cron/strike-decay",
+      "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/cron/weekly-reports",
+      "schedule": "0 18 * * 5"
+    }
+  ],
+  "env": {
+    "CRON_SECRET": "@cron_secret",
+    "DATABASE_URL": "@database_url",
+    "SMS_PROVIDER_KEY": "@sms_provider_key",
+    "TWILIO_ACCOUNT_SID": "@twilio_account_sid",
+    "TWILIO_AUTH_TOKEN": "@twilio_auth_token"
+  },
+  "build": {
+    "env": {
+      "NEXT_PUBLIC_APP_URL": "@app_url"
+    }
+  },
+  "functions": {
+    "src/app/api/cron/check-overdue-fees/route.ts": {
+      "maxDuration": 30
+    },
+    "src/app/api/cron/weekly-invoices/route.ts": {
+      "maxDuration": 60
+    },
+    "src/app/api/cron/strike-decay/route.ts": {
+      "maxDuration": 30
+    },
+    "src/app/api/cron/weekly-reports/route.ts": {
+      "maxDuration": 45
+    }
+  }
+}

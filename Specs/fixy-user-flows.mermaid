@@ -1,0 +1,173 @@
+graph TD
+    Start([User Opens App]) --> CheckAuth{Logged In?}
+    
+    CheckAuth -->|No| Login[Login/Signup Screen]
+    CheckAuth -->|Yes| RoleCheck{User Role?}
+    
+    Login --> EnterPhone[Enter Phone Number]
+    EnterPhone --> SendOTP[System Sends OTP]
+    SendOTP --> VerifyOTP[Enter OTP Code]
+    VerifyOTP --> OTPValid{OTP Valid?}
+    OTPValid -->|No| SendOTP
+    OTPValid -->|Yes| SelectRole[Select Role: Customer/Worker]
+    SelectRole --> RoleCheck
+    
+    RoleCheck -->|Customer| CustomerHome[Customer Dashboard]
+    RoleCheck -->|Worker| WorkerCheck{Profile Complete?}
+    RoleCheck -->|Admin| AdminDash[Admin Dashboard]
+    
+    WorkerCheck -->|No| WorkerOnboard[Complete Worker Profile]
+    WorkerOnboard --> UploadID[Upload ID Photo]
+    UploadID --> UploadProfile[Upload Profile Photo]
+    UploadProfile --> SelectCategory[Select Service Category]
+    SelectCategory --> EnterBio[Enter Bio]
+    EnterBio --> SetAvail[Set Availability]
+    SetAvail --> SubmitVerif[Submit for Verification]
+    SubmitVerif --> PendingApproval[Pending Admin Approval]
+    PendingApproval --> WorkerCheck
+    
+    WorkerCheck -->|Yes| WorkerHome[Worker Dashboard]
+    
+    %% Customer Booking Flow
+    CustomerHome --> CreateJob[Create New Job Request]
+    CreateJob --> SelectService[Select Service Type]
+    SelectService --> EnterDesc[Enter Description]
+    EnterDesc --> UploadPhotos{Upload Photos?}
+    UploadPhotos -->|Yes| PhotoUpload[Upload Photos/Videos]
+    UploadPhotos -->|No| EnterAddress[Enter Address]
+    PhotoUpload --> EnterAddress
+    EnterAddress --> SelectTime[Select Preferred Time]
+    SelectTime --> InspectionQ{Need Inspection First?}
+    InspectionQ -->|Yes| SetInspection[Mark Inspection Required]
+    InspectionQ -->|No| SubmitJob[Submit Job Request]
+    SetInspection --> SubmitJob
+    SubmitJob --> JobPosted[Job Posted - Awaiting Worker]
+    
+    %% Worker Accepting Job
+    WorkerHome --> ViewJobs[View Available Jobs]
+    ViewJobs --> SelectJob[Select Job to Review]
+    SelectJob --> ReviewDetails[Review Job Details]
+    ReviewDetails --> WorkerDecision{Accept Job?}
+    
+    WorkerDecision -->|No| RejectReason[Select Rejection Reason]
+    RejectReason --> NotifyCustomer[Customer Notified]
+    NotifyCustomer --> WorkerHome
+    
+    WorkerDecision -->|Yes| AcceptJob[Accept Job]
+    AcceptJob --> PriceMode{Pricing Mode?}
+    
+    PriceMode -->|Fixed| FixedPrice[Use Preset Price]
+    PriceMode -->|Inspection| NotifyInspection[Notify: Price After Visit]
+    PriceMode -->|Negotiate| ProposePrice[Propose Price]
+    
+    ProposePrice --> CustomerReview{Customer Reviews}
+    CustomerReview -->|Accept| PriceAgreed[Price Agreed]
+    CustomerReview -->|Counter| CounterOffer[Customer Counter-Offers]
+    CustomerReview -->|Reject| JobCancelled[Job Cancelled]
+    
+    CounterOffer --> WorkerReview{Worker Reviews}
+    WorkerReview -->|Accept| PriceAgreed
+    WorkerReview -->|Counter| ProposePrice
+    WorkerReview -->|Max Reached| JobCancelled
+    
+    FixedPrice --> PriceAgreed
+    NotifyInspection --> ScheduleVisit[Schedule Visit]
+    PriceAgreed --> ScheduleVisit
+    
+    ScheduleVisit --> JobScheduled[Job Status: Scheduled]
+    JobScheduled --> WorkerArrives[Worker Arrives On-Site]
+    WorkerArrives --> StartWork[Mark Job In Progress]
+    StartWork --> CompleteWork[Worker Completes Work]
+    CompleteWork --> UploadCompletion[Upload Completion Photos]
+    UploadCompletion --> MarkComplete[Mark Job Complete]
+    MarkComplete --> CustomerConfirm{Customer Confirms?}
+    
+    CustomerConfirm -->|Yes| JobComplete[Job Status: Completed]
+    CustomerConfirm -->|No| DisputeCheck{Issue?}
+    
+    DisputeCheck -->|Minor| ResolveChat[Resolve via Chat]
+    DisputeCheck -->|Major| OpenDispute[Open Dispute]
+    ResolveChat --> JobComplete
+    
+    JobComplete --> LeaveReview[Customer Leaves Review]
+    LeaveReview --> PaymentReminder[Cash Payment to Worker]
+    PaymentReminder --> End([End])
+    
+    %% Guarantee Flow
+    JobComplete --> GuaranteeWindow{Within 7 Days?}
+    GuaranteeWindow -->|Issue Returns| FileGuarantee[File Guarantee Claim]
+    FileGuarantee --> UploadEvidence[Upload Photos/Evidence]
+    UploadEvidence --> NotifyWorker[Worker Notified]
+    NotifyWorker --> WorkerResponse{Worker Response}
+    
+    WorkerResponse -->|Accept| ScheduleReturn[Schedule Return Visit]
+    WorkerResponse -->|Refuse| AdminReview[Admin Reviews Case]
+    WorkerResponse -->|No Response| AutoEscalate[Auto-Escalate to Admin]
+    
+    ScheduleReturn --> ReturnVisit[Worker Returns]
+    ReturnVisit --> FixIssue[Fix Issue]
+    FixIssue --> GuaranteeClosed[Guarantee Case Closed]
+    
+    AdminReview --> AdminDecision{Admin Decision}
+    AutoEscalate --> AdminDecision
+    
+    AdminDecision -->|Worker Fault| IssueStrike[Issue Strike to Worker]
+    AdminDecision -->|Customer Fault| RejectClaim[Reject Claim]
+    AdminDecision -->|Unclear| Mediate[Mediate Solution]
+    
+    IssueStrike --> RequireReturn[Require Worker Return]
+    RequireReturn --> GuaranteeClosed
+    
+    %% Dispute Flow
+    OpenDispute --> SelectIssueType[Select Issue Type]
+    SelectIssueType --> DescribeIssue[Describe Issue]
+    DescribeIssue --> UploadDisputeEvidence[Upload Evidence]
+    UploadDisputeEvidence --> DisputeSubmit[Submit Dispute]
+    DisputeSubmit --> NotifyOtherParty[Notify Other Party]
+    NotifyOtherParty --> AdminInvestigate[Admin Investigates]
+    AdminInvestigate --> AdminRuling[Admin Makes Ruling]
+    AdminRuling --> DisputeResolved[Dispute Resolved]
+    DisputeResolved --> End
+    
+    %% Worker Fee Payment Flow
+    WorkerHome --> ViewFees[View Fees Owed]
+    ViewFees --> CheckInvoice[Check Weekly Invoice]
+    CheckInvoice --> FeeStatus{Payment Status?}
+    
+    FeeStatus -->|Paid| FeeHistory[View Payment History]
+    FeeStatus -->|Unpaid| PaymentOptions[Select Payment Method]
+    
+    PaymentOptions --> PayMethod{Payment Method?}
+    PayMethod -->|D17| PayD17[Pay via D17]
+    PayMethod -->|Flouci| PayFlouci[Pay via Flouci]
+    PayMethod -->|Wire| PayWire[Bank Transfer]
+    PayMethod -->|Other| PayOther[Other Methods]
+    
+    PayD17 --> SubmitProof[Submit Payment Reference]
+    PayFlouci --> SubmitProof
+    PayWire --> SubmitProof
+    PayOther --> SubmitProof
+    
+    SubmitProof --> AdminVerify[Admin Verifies Payment]
+    AdminVerify --> MarkPaid[Mark Invoice Paid]
+    MarkPaid --> AccountActive[Account Remains Active]
+    
+    FeeStatus -->|Overdue| OverdueCheck{Days Overdue?}
+    OverdueCheck -->|7-14 Days| SendReminder[Send Reminder]
+    OverdueCheck -->|14+ Days| SuspendAccount[Account Suspended]
+    
+    SuspendAccount --> PaymentReceived{Payment Made?}
+    PaymentReceived -->|Yes| Reinstate[Reinstate Account]
+    PaymentReceived -->|No| StaySuspended[Account Stays Suspended]
+    
+    Reinstate --> WorkerHome
+    
+    style Start fill:#4CAF50
+    style End fill:#F44336
+    style JobComplete fill:#2196F3
+    style PriceAgreed fill:#2196F3
+    style GuaranteeClosed fill:#2196F3
+    style DisputeResolved fill:#2196F3
+    style AccountActive fill:#4CAF50
+    style SuspendAccount fill:#F44336
+    style IssueStrike fill:#FF9800

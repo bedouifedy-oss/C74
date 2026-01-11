@@ -1,0 +1,982 @@
+// ============================================
+// FILE: messages/en.json
+// ============================================
+{
+  "common": {
+    "appName": "C74",
+    "yes": "Yes",
+    "no": "No",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "optional": "Optional",
+    "required": "Required",
+    "search": "Search",
+    "filter": "Filter",
+    "viewDetails": "View Details",
+    "close": "Close"
+  },
+  
+  "auth": {
+    "login": "Log In",
+    "logout": "Log Out",
+    "signup": "Sign Up",
+    "phoneNumber": "Phone Number",
+    "enterPhone": "Enter your phone number",
+    "phoneExample": "e.g., +216 XX XXX XXX",
+    "verifyOTP": "Verify Code",
+    "enterOTP": "Enter the 6-digit code",
+    "otpSent": "Code sent to your phone",
+    "resendOTP": "Resend Code",
+    "selectRole": "I am a...",
+    "customer": "Customer",
+    "worker": "Worker",
+    "invalidOTP": "Invalid code. Please try again.",
+    "phoneVerified": "Phone number verified successfully"
+  },
+  
+  "services": {
+    "title": "Services",
+    "plumbing": "Plumbing",
+    "electrical": "Electrical",
+    "ac": "AC Maintenance",
+    "cleaning": "Cleaning",
+    "selectService": "Select a service"
+  },
+  
+  "jobs": {
+    "title": "Jobs",
+    "myJobs": "My Jobs",
+    "createJob": "Create Job Request",
+    "jobDetails": "Job Details",
+    "description": "Description",
+    "describeIssue": "Describe the issue you're facing",
+    "address": "Address",
+    "enterAddress": "Enter your full address",
+    "addressDetails": "Address Details",
+    "addressDetailsPlaceholder": "Floor, apartment number, landmarks...",
+    "uploadPhotos": "Upload Photos (Optional)",
+    "selectDate": "Select Preferred Date",
+    "selectTime": "Select Preferred Time",
+    "inspectionRequired": "Inspection required before pricing",
+    "priceAfterInspection": "Get price after on-site inspection",
+    "submitRequest": "Submit Request",
+    "requestSubmitted": "Job request submitted successfully",
+    
+    "status": {
+      "title": "Status",
+      "requested": "Requested",
+      "accepted": "Accepted",
+      "scheduled": "Scheduled",
+      "inProgress": "In Progress",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "noShow": "No Show",
+      "disputed": "Disputed"
+    },
+    
+    "actions": {
+      "accept": "Accept Job",
+      "reject": "Reject Job",
+      "cancel": "Cancel Job",
+      "complete": "Mark Complete",
+      "viewWorker": "View Worker Profile"
+    },
+    
+    "price": {
+      "estimate": "Estimated Price",
+      "agreed": "Agreed Price",
+      "proposePrice": "Propose Price",
+      "enterAmount": "Enter amount in TND",
+      "priceNotes": "Notes about pricing",
+      "acceptPrice": "Accept Price",
+      "counterOffer": "Counter Offer",
+      "priceAgreed": "Price agreed: {price}",
+      "waitingCustomer": "Waiting for customer response",
+      "waitingWorker": "Waiting for worker response"
+    },
+    
+    "completion": {
+      "uploadPhotos": "Upload completion photos",
+      "addNotes": "Add completion notes",
+      "markComplete": "Mark as Complete",
+      "completionConfirm": "Work has been completed satisfactorily"
+    }
+  },
+  
+  "workers": {
+    "title": "Workers",
+    "findWorker": "Find a Worker",
+    "workerProfile": "Worker Profile",
+    "rating": "Rating",
+    "completedJobs": "Completed Jobs",
+    "guaranteeOffered": "7-Day Guarantee",
+    "availability": "Availability",
+    "bio": "About",
+    "reviews": "Reviews",
+    "noReviewsYet": "No reviews yet",
+    "contactWorker": "Contact Worker",
+    
+    "profile": {
+      "createProfile": "Complete Your Profile",
+      "uploadProfilePhoto": "Upload Profile Photo",
+      "uploadID": "Upload ID Document",
+      "selectCategory": "Select Your Service Category",
+      "enterBio": "Tell customers about your experience",
+      "bioPlaceholder": "Years of experience, specializations, certifications...",
+      "setAvailability": "Set Your Availability",
+      "submitForReview": "Submit for Verification",
+      "pending": "Profile pending admin approval",
+      "approved": "Profile approved",
+      "rejected": "Profile rejected"
+    },
+    
+    "rejection": {
+      "title": "Reason for Rejection",
+      "tooFar": "Location too far",
+      "notAvailable": "Not available at that time",
+      "outOfScope": "Work outside my expertise",
+      "other": "Other (please specify)",
+      "provideReason": "Please provide a reason"
+    }
+  },
+  
+  "messages": {
+    "title": "Messages",
+    "conversation": "Conversation",
+    "typeMessage": "Type a message...",
+    "send": "Send",
+    "noMessages": "No messages yet"
+  },
+  
+  "reviews": {
+    "title": "Reviews",
+    "leaveReview": "Leave a Review",
+    "rating": "Rating",
+    "selectRating": "Select rating (1-5 stars)",
+    "comment": "Comment (Optional)",
+    "commentPlaceholder": "Share your experience...",
+    "submitReview": "Submit Review",
+    "reviewSubmitted": "Review submitted successfully",
+    "editReview": "Edit Review",
+    "deleteReview": "Delete Review"
+  },
+  
+  "guarantee": {
+    "title": "7-Day Guarantee",
+    "fileCase": "File Guarantee Claim",
+    "description": "Issue Description",
+    "describeIssue": "Describe what issue returned",
+    "uploadEvidence": "Upload Evidence",
+    "submitClaim": "Submit Claim",
+    "claimSubmitted": "Guarantee claim submitted",
+    "workerNotified": "Worker has been notified",
+    "status": {
+      "open": "Open",
+      "accepted": "Worker Accepted",
+      "refused": "Worker Refused",
+      "resolved": "Resolved",
+      "rejected": "Rejected"
+    },
+    "notCovered": "This issue is not covered by the guarantee",
+    "expired": "Guarantee period has expired (7 days)"
+  },
+  
+  "disputes": {
+    "title": "Disputes",
+    "openDispute": "Open Dispute",
+    "issueType": "Issue Type",
+    "types": {
+      "noShow": "Worker/Customer didn't show up",
+      "quality": "Quality of work",
+      "payment": "Payment disagreement",
+      "behavior": "Unprofessional behavior",
+      "other": "Other"
+    },
+    "description": "Description",
+    "uploadEvidence": "Upload Evidence",
+    "submitDispute": "Submit Dispute",
+    "disputeSubmitted": "Dispute submitted to admin review",
+    "status": {
+      "open": "Open",
+      "investigating": "Under Investigation",
+      "resolved": "Resolved",
+      "closed": "Closed"
+    }
+  },
+  
+  "fees": {
+    "title": "Fees",
+    "weeklyFees": "Weekly Fees",
+    "amountDue": "Amount Due",
+    "paid": "Paid",
+    "unpaid": "Unpaid",
+    "overdue": "Overdue",
+    "dueDate": "Due Date",
+    "paymentMethods": "Payment Methods",
+    "payNow": "Pay Now",
+    "paymentReference": "Payment Reference",
+    "submitPayment": "Submit Payment Proof",
+    "paymentReceived": "Payment received and verified",
+    "invoiceNumber": "Invoice #{number}",
+    "period": "Period: {start} - {end}",
+    "jobsCompleted": "{count} jobs completed"
+  },
+  
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Mark All as Read",
+    "noNotifications": "No notifications",
+    "types": {
+      "jobAccepted": "Your job has been accepted",
+      "jobCompleted": "Job marked as completed",
+      "priceProposed": "Worker proposed a price",
+      "paymentDue": "Payment due in {days} days",
+      "disputeOpened": "A dispute has been opened",
+      "guaranteeClaimed": "Guarantee claim filed"
+    }
+  },
+  
+  "admin": {
+    "title": "Admin Panel",
+    "dashboard": "Dashboard",
+    "workers": "Workers",
+    "jobs": "Jobs",
+    "disputes": "Disputes",
+    "fees": "Fees",
+    "reviews": "Reviews",
+    
+    "workerVerification": {
+      "pending": "Pending Verification",
+      "approve": "Approve Worker",
+      "reject": "Reject Worker",
+      "requestMoreInfo": "Request More Information",
+      "verificationNotes": "Verification Notes"
+    },
+    
+    "actions": {
+      "suspend": "Suspend",
+      "unsuspend": "Unsuspend",
+      "addStrike": "Add Strike",
+      "viewHistory": "View History",
+      "sendWarning": "Send Warning"
+    },
+    
+    "strikes": {
+      "title": "Strikes",
+      "count": "{count} strikes",
+      "reason": "Reason",
+      "date": "Date",
+      "addStrike": "Add Strike",
+      "reasons": {
+        "noShow": "No Show",
+        "guaranteeRefusal": "Guarantee Refusal",
+        "qualityIssue": "Quality Issue",
+        "behavior": "Unprofessional Behavior"
+      }
+    }
+  },
+  
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "notifications": "Notifications",
+    "privacy": "Privacy",
+    "terms": "Terms & Conditions",
+    "support": "Support",
+    "about": "About Fixy.tn"
+  },
+  
+  "errors": {
+    "required": "This field is required",
+    "invalidPhone": "Invalid phone number",
+    "invalidEmail": "Invalid email address",
+    "networkError": "Network error. Please check your connection.",
+    "unauthorized": "You must be logged in",
+    "forbidden": "You don't have permission to do this",
+    "notFound": "Not found",
+    "serverError": "Server error. Please try again later.",
+    "uploadFailed": "File upload failed",
+    "fileTooLarge": "File is too large (max 5MB)"
+  },
+  
+  "timeSlots": {
+    "morning": "Morning (8AM-12PM)",
+    "afternoon": "Afternoon (12PM-5PM)",
+    "evening": "Evening (5PM-8PM)"
+  },
+  
+  "days": {
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "sunday": "Sunday"
+  }
+}
+
+// ============================================
+// FILE: messages/fr.json
+// ============================================
+{
+  "common": {
+    "appName": "C74",
+    "yes": "Oui",
+    "no": "Non",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "back": "Retour",
+    "next": "Suivant",
+    "submit": "Soumettre",
+    "loading": "Chargement...",
+    "error": "Une erreur s'est produite",
+    "success": "Succès",
+    "optional": "Optionnel",
+    "required": "Requis",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "viewDetails": "Voir les détails",
+    "close": "Fermer"
+  },
+  
+  "auth": {
+    "login": "Se connecter",
+    "logout": "Se déconnecter",
+    "signup": "S'inscrire",
+    "phoneNumber": "Numéro de téléphone",
+    "enterPhone": "Entrez votre numéro de téléphone",
+    "phoneExample": "ex: +216 XX XXX XXX",
+    "verifyOTP": "Vérifier le code",
+    "enterOTP": "Entrez le code à 6 chiffres",
+    "otpSent": "Code envoyé à votre téléphone",
+    "resendOTP": "Renvoyer le code",
+    "selectRole": "Je suis...",
+    "customer": "Client",
+    "worker": "Prestataire",
+    "invalidOTP": "Code invalide. Veuillez réessayer.",
+    "phoneVerified": "Numéro de téléphone vérifié avec succès"
+  },
+  
+  "services": {
+    "title": "Services",
+    "plumbing": "Plomberie",
+    "electrical": "Électricité",
+    "ac": "Maintenance de climatisation",
+    "cleaning": "Nettoyage",
+    "selectService": "Sélectionnez un service"
+  },
+  
+  "jobs": {
+    "title": "Travaux",
+    "myJobs": "Mes travaux",
+    "createJob": "Créer une demande",
+    "jobDetails": "Détails du travail",
+    "description": "Description",
+    "describeIssue": "Décrivez le problème rencontré",
+    "address": "Adresse",
+    "enterAddress": "Entrez votre adresse complète",
+    "addressDetails": "Détails de l'adresse",
+    "addressDetailsPlaceholder": "Étage, numéro d'appartement, points de repère...",
+    "uploadPhotos": "Télécharger des photos (Optionnel)",
+    "selectDate": "Sélectionnez la date préférée",
+    "selectTime": "Sélectionnez l'heure préférée",
+    "inspectionRequired": "Inspection nécessaire avant tarification",
+    "priceAfterInspection": "Obtenir le prix après inspection sur place",
+    "submitRequest": "Soumettre la demande",
+    "requestSubmitted": "Demande de travail soumise avec succès",
+    
+    "status": {
+      "title": "Statut",
+      "requested": "Demandée",
+      "accepted": "Acceptée",
+      "scheduled": "Programmée",
+      "inProgress": "En cours",
+      "completed": "Terminée",
+      "cancelled": "Annulée",
+      "noShow": "Absence",
+      "disputed": "Litige"
+    },
+    
+    "actions": {
+      "accept": "Accepter le travail",
+      "reject": "Refuser le travail",
+      "cancel": "Annuler le travail",
+      "complete": "Marquer comme terminé",
+      "viewWorker": "Voir le profil du prestataire"
+    },
+    
+    "price": {
+      "estimate": "Prix estimé",
+      "agreed": "Prix convenu",
+      "proposePrice": "Proposer un prix",
+      "enterAmount": "Entrez le montant en TND",
+      "priceNotes": "Notes sur la tarification",
+      "acceptPrice": "Accepter le prix",
+      "counterOffer": "Contre-proposition",
+      "priceAgreed": "Prix convenu: {price}",
+      "waitingCustomer": "En attente de la réponse du client",
+      "waitingWorker": "En attente de la réponse du prestataire"
+    },
+    
+    "completion": {
+      "uploadPhotos": "Télécharger les photos de fin de travaux",
+      "addNotes": "Ajouter des notes de fin de travaux",
+      "markComplete": "Marquer comme terminé",
+      "completionConfirm": "Le travail a été terminé de manière satisfaisante"
+    }
+  },
+  
+  "workers": {
+    "title": "Prestataires",
+    "findWorker": "Trouver un prestataire",
+    "workerProfile": "Profil du prestataire",
+    "rating": "Évaluation",
+    "completedJobs": "Travaux terminés",
+    "guaranteeOffered": "Garantie 7 jours",
+    "availability": "Disponibilité",
+    "bio": "À propos",
+    "reviews": "Avis",
+    "noReviewsYet": "Pas encore d'avis",
+    "contactWorker": "Contacter le prestataire",
+    
+    "profile": {
+      "createProfile": "Complétez votre profil",
+      "uploadProfilePhoto": "Télécharger une photo de profil",
+      "uploadID": "Télécharger un document d'identité",
+      "selectCategory": "Sélectionnez votre catégorie de service",
+      "enterBio": "Parlez aux clients de votre expérience",
+      "bioPlaceholder": "Années d'expérience, spécialisations, certifications...",
+      "setAvailability": "Définir votre disponibilité",
+      "submitForReview": "Soumettre pour vérification",
+      "pending": "Profil en attente d'approbation",
+      "approved": "Profil approuvé",
+      "rejected": "Profil rejeté"
+    },
+    
+    "rejection": {
+      "title": "Motif de refus",
+      "tooFar": "Lieu trop éloigné",
+      "notAvailable": "Pas disponible à ce moment",
+      "outOfScope": "Travail hors de mon expertise",
+      "other": "Autre (veuillez préciser)",
+      "provideReason": "Veuillez fournir un motif"
+    }
+  },
+  
+  "messages": {
+    "title": "Messages",
+    "conversation": "Conversation",
+    "typeMessage": "Tapez un message...",
+    "send": "Envoyer",
+    "noMessages": "Pas encore de messages"
+  },
+  
+  "reviews": {
+    "title": "Avis",
+    "leaveReview": "Laisser un avis",
+    "rating": "Évaluation",
+    "selectRating": "Sélectionnez une note (1-5 étoiles)",
+    "comment": "Commentaire (Optionnel)",
+    "commentPlaceholder": "Partagez votre expérience...",
+    "submitReview": "Soumettre l'avis",
+    "reviewSubmitted": "Avis soumis avec succès",
+    "editReview": "Modifier l'avis",
+    "deleteReview": "Supprimer l'avis"
+  },
+  
+  "guarantee": {
+    "title": "Garantie 7 jours",
+    "fileCase": "Déposer une réclamation de garantie",
+    "description": "Description du problème",
+    "describeIssue": "Décrivez le problème qui est revenu",
+    "uploadEvidence": "Télécharger des preuves",
+    "submitClaim": "Soumettre la réclamation",
+    "claimSubmitted": "Réclamation de garantie soumise",
+    "workerNotified": "Le prestataire a été notifié",
+    "status": {
+      "open": "Ouverte",
+      "accepted": "Acceptée par le prestataire",
+      "refused": "Refusée par le prestataire",
+      "resolved": "Résolue",
+      "rejected": "Rejetée"
+    },
+    "notCovered": "Ce problème n'est pas couvert par la garantie",
+    "expired": "La période de garantie a expiré (7 jours)"
+  },
+  
+  "disputes": {
+    "title": "Litiges",
+    "openDispute": "Ouvrir un litige",
+    "issueType": "Type de problème",
+    "types": {
+      "noShow": "Absence du prestataire/client",
+      "quality": "Qualité du travail",
+      "payment": "Désaccord sur le paiement",
+      "behavior": "Comportement non professionnel",
+      "other": "Autre"
+    },
+    "description": "Description",
+    "uploadEvidence": "Télécharger des preuves",
+    "submitDispute": "Soumettre le litige",
+    "disputeSubmitted": "Litige soumis à l'examen de l'administrateur",
+    "status": {
+      "open": "Ouvert",
+      "investigating": "En cours d'enquête",
+      "resolved": "Résolu",
+      "closed": "Fermé"
+    }
+  },
+  
+  "fees": {
+    "title": "Frais",
+    "weeklyFees": "Frais hebdomadaires",
+    "amountDue": "Montant dû",
+    "paid": "Payé",
+    "unpaid": "Non payé",
+    "overdue": "En retard",
+    "dueDate": "Date d'échéance",
+    "paymentMethods": "Moyens de paiement",
+    "payNow": "Payer maintenant",
+    "paymentReference": "Référence de paiement",
+    "submitPayment": "Soumettre la preuve de paiement",
+    "paymentReceived": "Paiement reçu et vérifié",
+    "invoiceNumber": "Facture #{number}",
+    "period": "Période: {start} - {end}",
+    "jobsCompleted": "{count} travaux terminés"
+  },
+  
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Tout marquer comme lu",
+    "noNotifications": "Aucune notification",
+    "types": {
+      "jobAccepted": "Votre travail a été accepté",
+      "jobCompleted": "Travail marqué comme terminé",
+      "priceProposed": "Le prestataire a proposé un prix",
+      "paymentDue": "Paiement dû dans {days} jours",
+      "disputeOpened": "Un litige a été ouvert",
+      "guaranteeClaimed": "Réclamation de garantie déposée"
+    }
+  },
+  
+  "admin": {
+    "title": "Panneau d'administration",
+    "dashboard": "Tableau de bord",
+    "workers": "Prestataires",
+    "jobs": "Travaux",
+    "disputes": "Litiges",
+    "fees": "Frais",
+    "reviews": "Avis",
+    
+    "workerVerification": {
+      "pending": "En attente de vérification",
+      "approve": "Approuver le prestataire",
+      "reject": "Rejeter le prestataire",
+      "requestMoreInfo": "Demander plus d'informations",
+      "verificationNotes": "Notes de vérification"
+    },
+    
+    "actions": {
+      "suspend": "Suspendre",
+      "unsuspend": "Réactiver",
+      "addStrike": "Ajouter un avertissement",
+      "viewHistory": "Voir l'historique",
+      "sendWarning": "Envoyer un avertissement"
+    },
+    
+    "strikes": {
+      "title": "Avertissements",
+      "count": "{count} avertissements",
+      "reason": "Motif",
+      "date": "Date",
+      "addStrike": "Ajouter un avertissement",
+      "reasons": {
+        "noShow": "Absence",
+        "guaranteeRefusal": "Refus de garantie",
+        "qualityIssue": "Problème de qualité",
+        "behavior": "Comportement non professionnel"
+      }
+    }
+  },
+  
+  "settings": {
+    "title": "Paramètres",
+    "language": "Langue",
+    "notifications": "Notifications",
+    "privacy": "Confidentialité",
+    "terms": "Conditions générales",
+    "support": "Support",
+    "about": "À propos de Fixy.tn"
+  },
+  
+  "errors": {
+    "required": "Ce champ est requis",
+    "invalidPhone": "Numéro de téléphone invalide",
+    "invalidEmail": "Adresse e-mail invalide",
+    "networkError": "Erreur réseau. Vérifiez votre connexion.",
+    "unauthorized": "Vous devez être connecté",
+    "forbidden": "Vous n'avez pas la permission de faire cela",
+    "notFound": "Non trouvé",
+    "serverError": "Erreur serveur. Réessayez plus tard.",
+    "uploadFailed": "Échec du téléchargement du fichier",
+    "fileTooLarge": "Fichier trop volumineux (max 5MB)"
+  },
+  
+  "timeSlots": {
+    "morning": "Matin (8h-12h)",
+    "afternoon": "Après-midi (12h-17h)",
+    "evening": "Soir (17h-20h)"
+  },
+  
+  "days": {
+    "monday": "Lundi",
+    "tuesday": "Mardi",
+    "wednesday": "Mercredi",
+    "thursday": "Jeudi",
+    "friday": "Vendredi",
+    "saturday": "Samedi",
+    "sunday": "Dimanche"
+  }
+}
+
+// ============================================
+// FILE: messages/ar-TN.json
+// Note: This uses Modern Standard Arabic
+// Consider hiring a Tunisian translator to adapt to Darija
+// ============================================
+{
+  "common": {
+    "appName": "C74",
+    "yes": "نعم",
+    "no": "لا",
+    "cancel": "إلغاء",
+    "confirm": "تأكيد",
+    "save": "حفظ",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "back": "رجوع",
+    "next": "التالي",
+    "submit": "إرسال",
+    "loading": "جاري التحميل...",
+    "error": "حدث خطأ",
+    "success": "نجح",
+    "optional": "اختياري",
+    "required": "مطلوب",
+    "search": "بحث",
+    "filter": "تصفية",
+    "viewDetails": "عرض التفاصيل",
+    "close": "إغلاق"
+  },
+  
+  "auth": {
+    "login": "تسجيل الدخول",
+    "logout": "تسجيل الخروج",
+    "signup": "إنشاء حساب",
+    "phoneNumber": "رقم الهاتف",
+    "enterPhone": "أدخل رقم هاتفك",
+    "phoneExample": "مثال: +216 XX XXX XXX",
+    "verifyOTP": "تحقق من الرمز",
+    "enterOTP": "أدخل الرمز المكون من 6 أرقام",
+    "otpSent": "تم إرسال الرمز إلى هاتفك",
+    "resendOTP": "إعادة إرسال الرمز",
+    "selectRole": "أنا...",
+    "customer": "زبون",
+    "worker": "عامل",
+    "invalidOTP": "رمز غير صحيح. حاول مرة أخرى.",
+    "phoneVerified": "تم التحقق من رقم الهاتف بنجاح"
+  },
+  
+  "services": {
+    "title": "الخدمات",
+    "plumbing": "سباكة",
+    "electrical": "كهرباء",
+    "ac": "صيانة التكييف",
+    "cleaning": "تنظيف",
+    "selectService": "اختر خدمة"
+  },
+  
+  "jobs": {
+    "title": "الأعمال",
+    "myJobs": "أعمالي",
+    "createJob": "إنشاء طلب عمل",
+    "jobDetails": "تفاصيل العمل",
+    "description": "الوصف",
+    "describeIssue": "صف المشكلة التي تواجهها",
+    "address": "العنوان",
+    "enterAddress": "أدخل عنوانك الكامل",
+    "addressDetails": "تفاصيل العنوان",
+    "addressDetailsPlaceholder": "الطابق، رقم الشقة، علامات مميزة...",
+    "uploadPhotos": "تحميل صور (اختياري)",
+    "selectDate": "اختر التاريخ المفضل",
+    "selectTime": "اختر الوقت المفضل",
+    "inspectionRequired": "الفحص مطلوب قبل التسعير",
+    "priceAfterInspection": "الحصول على السعر بعد الفحص في الموقع",
+    "submitRequest": "إرسال الطلب",
+    "requestSubmitted": "تم إرسال طلب العمل بنجاح",
+    
+    "status": {
+      "title": "الحالة",
+      "requested": "مطلوب",
+      "accepted": "مقبول",
+      "scheduled": "مجدول",
+      "inProgress": "قيد التنفيذ",
+      "completed": "مكتمل",
+      "cancelled": "ملغى",
+      "noShow": "عدم حضور",
+      "disputed": "متنازع عليه"
+    },
+    
+    "actions": {
+      "accept": "قبول العمل",
+      "reject": "رفض العمل",
+      "cancel": "إلغاء العمل",
+      "complete": "تعليم كمكتمل",
+      "viewWorker": "عرض ملف العامل"
+    },
+    
+    "price": {
+      "estimate": "السعر المقدر",
+      "agreed": "السعر المتفق عليه",
+      "proposePrice": "اقتراح سعر",
+      "enterAmount": "أدخل المبلغ بالدينار التونسي",
+      "priceNotes": "ملاحظات حول السعر",
+      "acceptPrice": "قبول السعر",
+      "counterOffer": "عرض مضاد",
+      "priceAgreed": "السعر المتفق عليه: {price}",
+      "waitingCustomer": "في انتظار رد الزبون",
+      "waitingWorker": "في انتظار رد العامل"
+    },
+    
+    "completion": {
+      "uploadPhotos": "تحميل صور الإنجاز",
+      "addNotes": "إضافة ملاحظات الإنجاز",
+      "markComplete": "تعليم كمكتمل",
+      "completionConfirm": "تم إنجاز العمل بشكل مرضٍ"
+    }
+  },
+  
+  "workers": {
+    "title": "العمال",
+    "findWorker": "البحث عن عامل",
+    "workerProfile": "ملف العامل",
+    "rating": "التقييم",
+    "completedJobs": "الأعمال المكتملة",
+    "guaranteeOffered": "ضمان 7 أيام",
+    "availability": "التوفر",
+    "bio": "نبذة",
+    "reviews": "التقييمات",
+    "noReviewsYet": "لا توجد تقييمات بعد",
+    "contactWorker": "الاتصال بالعامل",
+    
+    "profile": {
+      "createProfile": "أكمل ملفك الشخصي",
+      "uploadProfilePhoto": "تحميل صورة الملف الشخصي",
+      "uploadID": "تحميل وثيقة الهوية",
+      "selectCategory": "اختر فئة خدمتك",
+      "enterBio": "أخبر الزبائن عن خبرتك",
+      "bioPlaceholder": "سنوات الخبرة، التخصصات، الشهادات...",
+      "setAvailability": "حدد توفرك",
+      "submitForReview": "إرسال للتحقق",
+      "pending": "الملف قيد انتظار الموافقة",
+      "approved": "تمت الموافقة على الملف",
+      "rejected": "تم رفض الملف"
+    },
+    
+    "rejection": {
+      "title": "سبب الرفض",
+      "tooFar": "الموقع بعيد جداً",
+      "notAvailable": "غير متوفر في ذلك الوقت",
+      "outOfScope": "عمل خارج خبرتي",
+      "other": "أخرى (يرجى التحديد)",
+      "provideReason": "يرجى تقديم سبب"
+    }
+  },
+  
+  "messages": {
+    "title": "الرسائل",
+    "conversation": "المحادثة",
+    "typeMessage": "اكتب رسالة...",
+    "send": "إرسال",
+    "noMessages": "لا توجد رسائل بعد"
+  },
+  
+  "reviews": {
+    "title": "التقييمات",
+    "leaveReview": "ترك تقييم",
+    "rating": "التقييم",
+    "selectRating": "اختر التقييم (1-5 نجوم)",
+    "comment": "تعليق (اختياري)",
+    "commentPlaceholder": "شارك تجربتك...",
+    "submitReview": "إرسال التقييم",
+    "reviewSubmitted": "تم إرسال التقييم بنجاح",
+    "editReview": "تعديل التقييم",
+    "deleteReview": "حذف التقييم"
+  },
+  
+  "guarantee": {
+    "title": "ضمان 7 أيام",
+    "fileCase": "تقديم مطالبة ضمان",
+    "description": "وصف المشكلة",
+    "describeIssue": "صف المشكلة التي عادت",
+    "uploadEvidence": "تحميل الأدلة",
+    "submitClaim": "إرسال المطالبة",
+    "claimSubmitted": "تم إرسال مطالبة الضمان",
+    "workerNotified": "تم إشعار العامل",
+    "status": {
+      "open": "مفتوحة",
+      "accepted": "قبلها العامل",
+      "refused": "رفضها العامل",
+      "resolved": "محلولة",
+      "rejected": "مرفوضة"
+    },
+    "notCovered": "هذه المشكلة غير مشمولة بالضمان",
+    "expired": "انتهت فترة الضمان (7 أيام)"
+  },
+  
+  "disputes": {
+    "title": "النزاعات",
+    "openDispute": "فتح نزاع",
+    "issueType": "نوع المشكلة",
+    "types": {
+      "noShow": "لم يحضر العامل/الزبون",
+      "quality": "جودة العمل",
+      "payment": "خلاف حول الدفع",
+      "behavior": "سلوك غير مهني",
+      "other": "أخرى"
+    },
+    "description": "الوصف",
+    "uploadEvidence": "تحميل الأدلة",
+    "submitDispute": "إرسال النزاع",
+    "disputeSubmitted": "تم إرسال النزاع للمراجعة الإدارية",
+    "status": {
+      "open": "مفتوح",
+      "investigating": "قيد التحقيق",
+      "resolved": "محلول",
+      "closed": "مغلق"
+    }
+  },
+  
+  "fees": {
+    "title": "الرسوم",
+    "weeklyFees": "الرسوم الأسبوعية",
+    "amountDue": "المبلغ المستحق",
+    "paid": "مدفوع",
+    "unpaid": "غير مدفوع",
+    "overdue": "متأخر",
+    "dueDate": "تاريخ الاستحقاق",
+    "paymentMethods": "طرق الدفع",
+    "payNow": "ادفع الآن",
+    "paymentReference": "مرجع الدفع",
+    "submitPayment": "إرسال إثبات الدفع",
+    "paymentReceived": "تم استلام الدفع والتحقق منه",
+    "invoiceNumber": "فاتورة #{number}",
+    "period": "الفترة: {start} - {end}",
+    "jobsCompleted": "{count} أعمال مكتملة"
+  },
+  
+  "notifications": {
+    "title": "الإشعارات",
+    "markAllRead": "تعليم الكل كمقروء",
+    "noNotifications": "لا توجد إشعارات",
+    "types": {
+      "jobAccepted": "تم قبول عملك",
+      "jobCompleted": "تم تعليم العمل كمكتمل",
+      "priceProposed": "اقترح العامل سعراً",
+      "paymentDue": "الدفع مستحق خلال {days} أيام",
+      "disputeOpened": "تم فتح نزاع",
+      "guaranteeClaimed": "تم تقديم مطالبة ضمان"
+    }
+  },
+  
+  "admin": {
+    "title": "لوحة الإدارة",
+    "dashboard": "لوحة التحكم",
+    "workers": "العمال",
+    "jobs": "الأعمال",
+    "disputes": "النزاعات",
+    "fees": "الرسوم",
+    "reviews": "التقييمات",
+    
+    "workerVerification": {
+      "pending": "قيد انتظار التحقق",
+      "approve": "الموافقة على العامل",
+      "reject": "رفض العامل",
+      "requestMoreInfo": "طلب المزيد من المعلومات",
+      "verificationNotes": "ملاحظات التحقق"
+    },
+    
+    "actions": {
+      "suspend": "إيقاف",
+      "unsuspend": "إلغاء الإيقاف",
+      "addStrike": "إضافة إنذار",
+      "viewHistory": "عرض السجل",
+      "sendWarning": "إرسال تحذير"
+    },
+    
+    "strikes": {
+      "title": "الإنذارات",
+      "count": "{count} إنذارات",
+      "reason": "السبب",
+      "date": "التاريخ",
+      "addStrike": "إضافة إنذار",
+      "reasons": {
+        "noShow": "عدم حضور",
+        "guaranteeRefusal": "رفض الضمان",
+        "qualityIssue": "مشكلة جودة",
+        "behavior": "سلوك غير مهني"
+      }
+    }
+  },
+  
+  "settings": {
+    "title": "الإعدادات",
+    "language": "اللغة",
+    "notifications": "الإشعارات",
+    "privacy": "الخصوصية",
+    "terms": "الشروط والأحكام",
+    "support": "الدعم",
+    "about": "عن Fixy.tn"
+  },
+  
+  "errors": {
+    "required": "هذا الحقل مطلوب",
+    "invalidPhone": "رقم هاتف غير صحيح",
+    "invalidEmail": "عنوان بريد إلكتروني غير صحيح",
+    "networkError": "خطأ في الشبكة. تحقق من اتصالك.",
+    "unauthorized": "يجب عليك تسجيل الدخول",
+    "forbidden": "ليس لديك إذن للقيام بذلك",
+    "notFound": "غير موجود",
+    "serverError": "خطأ في الخادم. حاول مرة أخرى لاحقاً.",
+    "uploadFailed": "فشل تحميل الملف",
+    "fileTooLarge": "الملف كبير جداً (الحد الأقصى 5 ميجابايت)"
+  },
+  
+  "timeSlots": {
+    "morning": "صباحاً (8 صباحاً - 12 ظهراً)",
+    "afternoon": "بعد الظهر (12 ظهراً - 5 مساءً)",
+    "evening": "مساءً (5 مساءً - 8 مساءً)"
+  },
+  
+  "days": {
+    "monday": "الإثنين",
+    "tuesday": "الثلاثاء",
+    "wednesday": "الأربعاء",
+    "thursday": "الخميس",
+    "friday": "الجمعة",
+    "saturday": "السبت",
+    "sunday": "الأحد"
+  }
+}

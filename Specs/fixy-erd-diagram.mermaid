@@ -1,0 +1,205 @@
+erDiagram
+    users ||--o{ jobs : "creates/accepts"
+    users ||--o{ workers : "is"
+    users ||--o{ reviews : "writes"
+    users ||--o{ messages : "sends"
+    users ||--o{ disputes : "opens"
+    
+    workers ||--o{ availability : "sets"
+    workers ||--o{ fees : "owes"
+    workers ||--o{ worker_documents : "uploads"
+    
+    jobs ||--o{ reviews : "receives"
+    jobs ||--o| guarantee_cases : "may_have"
+    jobs ||--o{ messages : "contains"
+    jobs ||--o| disputes : "may_have"
+    jobs ||--o{ job_photos : "contains"
+    jobs ||--o{ price_negotiations : "has"
+    
+    users {
+        uuid id PK
+        text role "customer|worker|admin"
+        text name
+        text phone UK
+        text email
+        boolean phone_verified
+        int strikes_count
+        timestamp suspended_until
+        text suspension_reason "NEW: unpaid_fees|strikes|admin_action"
+        boolean can_reactivate "NEW: Can worker reactivate"
+        timestamp created_at
+        timestamp last_login
+    }
+    
+    workers {
+        uuid id PK,FK
+        text category "plumbing|electrical|AC|cleaning"
+        text bio
+        text city
+        decimal rating_avg
+        int rating_count
+        text status "active|suspended|pending|rejected"
+        boolean guarantee_enabled
+        boolean documents_verified
+        text profile_photo_url
+        int completed_jobs_count
+        timestamp created_at
+    }
+    
+    worker_documents {
+        uuid id PK
+        uuid worker_id FK
+        text document_type "id|certificate|license"
+        text file_url
+        text status "pending|approved|rejected"
+        text admin_notes
+        timestamp uploaded_at
+        timestamp verified_at
+    }
+    
+    availability {
+        uuid id PK
+        uuid worker_id FK
+        date date
+        text time_slot "morning|afternoon|evening"
+        text status "available|booked|blocked"
+        timestamp created_at
+    }
+    
+    jobs {
+        uuid id PK
+        uuid customer_id FK
+        uuid worker_id FK
+        text category
+        text description
+        text address
+        text address_details
+        decimal price_estimate
+        decimal price_agreed
+        timestamp price_agreed_at
+        boolean inspection_required
+        boolean price_after_inspection
+        int negotiation_count "NEW: Current counter-offers"
+        int max_negotiations "NEW: Max allowed (default 3)"
+        timestamp negotiation_closed_at "NEW: When closed"
+        text negotiation_closed_reason "NEW: Why closed"
+        date scheduled_date
+        text scheduled_time_slot
+        text status "requested|accepted|scheduled|in_progress|completed|cancelled|no_show|disputed"
+        text cancellation_reason
+        text cancelled_by "customer|worker|admin"
+        timestamp cancelled_at
+        timestamp created_at
+        timestamp accepted_at
+        timestamp completed_at
+        text completion_notes
+    }
+    
+    job_photos {
+        uuid id PK
+        uuid job_id FK
+        text photo_type "request|completion|dispute"
+        text file_url
+        text caption
+        timestamp uploaded_at
+    }
+    
+    price_negotiations {
+        uuid id PK
+        uuid job_id FK
+        uuid proposed_by FK
+        decimal amount
+        text notes
+        text status "pending|accepted|rejected|countered"
+        timestamp created_at
+    }
+    
+    messages {
+        uuid id PK
+        uuid job_id FK
+        uuid sender_id FK
+        text message_text
+        text message_type "text|price_proposal|system"
+        boolean read
+        timestamp created_at
+    }
+    
+    reviews {
+        uuid id PK
+        uuid job_id FK
+        uuid reviewer_id FK
+        uuid reviewed_user_id FK
+        int rating "1-5"
+        text comment
+        boolean flagged
+        boolean published
+        text flag_reason
+        timestamp created_at
+        timestamp published_at
+    }
+    
+    guarantee_cases {
+        uuid id PK
+        uuid job_id FK
+        text issue_category "NEW: same_problem|new_problem|quality_issue|no_show|payment_dispute|behavior"
+        boolean is_dispute "NEW: TRUE if dispute, FALSE if guarantee"
+        text description
+        text status "open|worker_accepted|worker_refused|resolved|rejected|investigating"
+        timestamp opened_at
+        timestamp resolved_at
+        text resolution "worker_returned|rejected|escalated"
+        text admin_notes
+        timestamp worker_notified_at
+        timestamp worker_responded_at
+    }
+    
+    disputes {
+        uuid id PK
+        uuid job_id FK
+        uuid opened_by FK
+        text issue_type "no_show|quality|payment|behavior|other"
+        text description
+        text status "open|investigating|resolved|closed"
+        text resolution
+        text admin_notes
+        uuid assigned_to FK
+        timestamp opened_at
+        timestamp resolved_at
+    }
+    
+    fees {
+        uuid id PK
+        uuid worker_id FK
+        date period_start
+        date period_end
+        int jobs_count
+        decimal amount_due
+        decimal amount_paid
+        text status "unpaid|paid|overdue|waived|pending_verification"
+        text payment_method
+        text payment_reference
+        text payment_proof_url "NEW: Screenshot of payment"
+        text payment_notes "NEW: Worker notes"
+        uuid verified_by FK "NEW: Admin who verified"
+        timestamp verified_at "NEW: When verified"
+        timestamp reminder_sent_at "NEW: Day 7 reminder"
+        timestamp warning_sent_at "NEW: Day 21 warning"
+        timestamp suspension_scheduled_at "NEW: Day 30 suspension"
+        int grace_period_days "NEW: Default 30"
+        timestamp invoice_sent_at
+        timestamp due_date
+        timestamp paid_at
+        timestamp created_at
+    }
+    
+    notifications {
+        uuid id PK
+        uuid user_id FK
+        text type "job_update|payment|dispute|system"
+        text title
+        text message
+        text action_url
+        boolean read
+        timestamp created_at
+        timestamp read_at
+    }
