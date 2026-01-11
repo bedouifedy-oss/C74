@@ -1,8 +1,0 @@
-{
-  "/api/workers/route": "app/api/workers/route.js",
-  "/[locale]/admin/login/page": "app/[locale]/admin/login/page.js",
-  "/[locale]/(auth)/login/page": "app/[locale]/(auth)/login/page.js",
-  "/[locale]/(auth)/signup/page": "app/[locale]/(auth)/signup/page.js",
-  "/[locale]/customer/browse-workers/page": "app/[locale]/customer/browse-workers/page.js",
-  "/[locale]/customer/dashboard/page": "app/[locale]/customer/dashboard/page.js"
-}
