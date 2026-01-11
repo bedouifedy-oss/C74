@@ -25,6 +25,7 @@ import {
   Home,
 } from 'lucide-react';
 import type { Locale } from '@/i18n-routing';
+import { useRouter } from '@/lib/i18n';
 
 const translations = {
   en: {
@@ -234,6 +235,7 @@ interface OnboardingWizardProps {
 
 export function OnboardingWizard({ locale, onComplete }: OnboardingWizardProps) {
   const t = translations[locale];
+  const router = useRouter();
   
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -297,6 +299,13 @@ export function OnboardingWizard({ locale, onComplete }: OnboardingWizardProps) 
       }
 
       const user = JSON.parse(userData);
+      
+      // Check if onboarding is already completed
+      if (user.onboarding_completed) {
+        console.log('Onboarding already completed, redirecting to dashboard');
+        router.push('/worker/dashboard');
+        return;
+      }
       
       // Create FormData for file uploads
       const formData = new FormData();

@@ -7,6 +7,29 @@ declare global {
   var workerProfiles: Record<string, any> | undefined;
 }
 
+// Helper function to get worker availability (same as availability API)
+async function getWorkerAvailability(workerId: string, client: any) {
+  const { data, error } = await client
+    .from('worker_weekly_availability')
+    .select('day_of_week, time_slot')
+    .eq('worker_id', workerId)
+    .order('day_of_week', { ascending: true });
+
+  if (error) {
+    console.error('Get weekly availability error:', error);
+    return { available: true, days: [], timeSlots: [] };
+  }
+
+  // Convert to expected format for UI (same as availability API)
+  const availability = (data || []).map((row: any) => ({
+    day: row.day_of_week,
+    slot: row.time_slot,
+    status: 'available',
+  }));
+
+  return availability;
+}
+
 export async function GET(request: NextRequest) {
   try {
     const session = getAuthSessionFromRequest(request);
@@ -62,11 +85,8 @@ export async function GET(request: NextRequest) {
       photoUrl: worker.profile_photo_url || '',
       skills: [],
       experience: [],
-      availability: {
-        available: true,
-        days: [],
-        timeSlots: [],
-      },
+      // Get real availability from worker_weekly_availability table (same as availability API)
+      availability: await getWorkerAvailability(workerId, client),
       rating: Number(worker.rating_avg || 0),
       completedJobs: worker.completed_jobs_count || 0,
       verificationStatus: worker.status || 'pending',
@@ -159,106 +179,58 @@ export async function POST(request: NextRequest) {
     if (availabilityData) {
       try {
         availability = JSON.parse(availabilityData);
+        console.log('🔍 ONBOARDING AVAILABILITY RAW DATA:', availabilityData);
+        console.log('🔍 ONBOARDING AVAILABILITY PARSED:', availability);
+        console.log('🔍 ONBOARDING AVAILABILITY TYPE:', typeof availability);
+        console.log('🔍 ONBOARDING AVAILABILITY KEYS:', Object.keys(availability));
       } catch (e) {
         console.error('Failed to parse availability:', e);
       }
     }
 
-    // MIGRATION: Convert onboarding JSON to worker_weekly_availability rows
-    // Using block logic (weekdays/weekends) → individual day slots
-    // ONLY run if no weekly data exists yet (prevent overwriting manual edits)
+    // Store availability in worker_weekly_availability table (same as availability API)
     if (availability.weekdays || availability.weekends) {
+      console.log('🔍 CONVERTING ONBOARDING AVAILABILITY...');
       try {
-        // Check if weekly availability data already exists
-        const { data: existingData } = await client
-          .from('worker_weekly_availability')
-          .select('id')
-          .eq('worker_id', workerId)
-          .limit(1);
+        // Convert onboarding structure to weekly recurring format
+        const weeklyAvailability = [];
+        const dayMapping = { weekdays: [0, 1, 2, 3, 4], weekends: [5, 6] };
 
-        if (!existingData || existingData.length === 0) {
-          console.log('🔍 No existing weekly data - running migration');
-          
-          const weeklyRows: Array<{
-            worker_id: string;
-            day_of_week: number;
-            time_slot: 'morning' | 'afternoon' | 'evening';
-          }> = [];
-          
-          // Process weekdays (1-5 = Monday-Friday)
-          if (availability.weekdays) {
-            [1, 2, 3, 4, 5].forEach(day => {
-              if (availability.weekdays.morning) {
-                weeklyRows.push({
+        Object.entries(availability).forEach(([period, slots]) => {
+          const days = dayMapping[period as keyof typeof dayMapping];
+          console.log(`🔍 Processing ${period}:`, slots, '→ days:', days);
+          Object.entries(slots).forEach(([slot, enabled]) => {
+            if (enabled) {
+              console.log(`🔍 Adding ${slot} for days:`, days);
+              days.forEach(day => {
+                weeklyAvailability.push({
                   worker_id: workerId,
                   day_of_week: day,
-                  time_slot: 'morning',
+                  time_slot: slot,
+                  updated_at: new Date().toISOString(),
                 });
-              }
-              if (availability.weekdays.afternoon) {
-                weeklyRows.push({
-                  worker_id: workerId,
-                  day_of_week: day,
-                  time_slot: 'afternoon',
-                });
-              }
-              if (availability.weekdays.evening) {
-                weeklyRows.push({
-                  worker_id: workerId,
-                  day_of_week: day,
-                  time_slot: 'evening',
-                });
-              }
-            });
-          }
-          
-          // Process weekends (0=Sunday, 6=Saturday)
-          if (availability.weekends) {
-            [0, 6].forEach(day => {
-              if (availability.weekends.morning) {
-                weeklyRows.push({
-                  worker_id: workerId,
-                  day_of_week: day,
-                  time_slot: 'morning',
-                });
-              }
-              if (availability.weekends.afternoon) {
-                weeklyRows.push({
-                  worker_id: workerId,
-                  day_of_week: day,
-                  time_slot: 'afternoon',
-                });
-              }
-              if (availability.weekends.evening) {
-                weeklyRows.push({
-                  worker_id: workerId,
-                  day_of_week: day,
-                  time_slot: 'evening',
-                });
-              }
-            });
-          }
-          
-          // Insert into worker_weekly_availability table (existing infrastructure)
-          if (weeklyRows.length > 0) {
-            const { error: weeklyError } = await client
-              .from('worker_weekly_availability')
-              .upsert(weeklyRows, {
-                onConflict: 'worker_id, day_of_week, time_slot'
               });
-            
-            if (weeklyError) {
-              console.error('Failed to create weekly availability:', weeklyError);
-            } else {
-              console.log('Weekly availability created successfully:', weeklyRows.length, 'rows');
             }
-          }
+          });
+        });
+
+        console.log('🔍 FINAL WEEKLY AVAILABILITY ARRAY:', weeklyAvailability);
+
+        // Upsert to worker_weekly_availability table (same logic as availability API)
+        const { error: weeklyError } = await client
+          .from('worker_weekly_availability')
+          .upsert(weeklyAvailability);
+
+        if (weeklyError) {
+          console.error('Failed to store weekly availability:', weeklyError);
         } else {
-          console.log('🔍 Weekly data already exists - skipping migration');
+          console.log('✅ Weekly availability stored successfully:', weeklyAvailability.length, 'entries');
         }
       } catch (e) {
-        console.error('Error migrating availability to weekly table:', e);
+        console.error('Error storing weekly availability:', e);
       }
+    } else {
+      console.log('❌ NO WEEKDAYS OR WEEKENDS FOUND IN AVAILABILITY:', availability);
     }
 
     // Build update object with only existing columns
@@ -276,7 +248,6 @@ export async function POST(request: NextRequest) {
       updateData.terms_accepted = termsAccepted;
       updateData.id_front_url = idFrontUrl;
       updateData.id_back_url = idBackUrl;
-      updateData.availability_schedule = availability;
       updateData.updated_at = new Date().toISOString();
     } catch (e) {
       console.log('Some columns may not exist yet, using existing columns only');
