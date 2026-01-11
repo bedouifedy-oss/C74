@@ -2,8 +2,8 @@ import { NextRequest } from 'next/server';
 import { apiError, apiSuccess, getLocaleFromRequest } from '@/lib/api-utils';
 import { verifyOTP } from '@/lib/sms';
 import { getUserByPhone, verifyUserPhone } from '@/lib/db';
-import { storeAuthSession } from '@/lib/auth-session';
-import { isSupabaseReady } from '@/lib/supabase';
+import { generateAuthToken } from '@/lib/auth-session';
+import { createServerSupabaseClient, isSupabaseReady } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
   const locale = getLocaleFromRequest(request);
@@ -46,7 +46,20 @@ export async function POST(request: NextRequest) {
 
     // Get user from database
     const user = await getUserByPhone(phone);
+    let workerData = null;
+    
     if (user) {
+      // Get worker data for onboarding status
+      const client = createServerSupabaseClient();
+      
+      if (client && (user.role === 'worker' || role === 'worker')) {
+        const { data: worker } = await client
+          .from('workers')
+          .select('onboarding_completed')
+          .eq('id', user.id)
+          .single();
+        workerData = worker;
+      }
       // Mark phone as verified
       await verifyUserPhone(user.id);
     }
@@ -57,16 +70,15 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Generate JWT token (in production, use proper JWT library like jose)
-    const token = `jwt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-
-    storeAuthSession(token, {
+    // Generate JWT token for authentication
+    const token = generateAuthToken({
       user_id: user.id,
       role: user.role || role || 'customer',
       phone: user.phone || phone,
+      created_at: Date.now()
     });
 
-    // Return complete user data
+    // Return complete user data with onboarding status
     return apiSuccess({
       token,
       user: {
@@ -77,6 +89,7 @@ export async function POST(request: NextRequest) {
         role: user.role || role || 'customer',
         phone_verified: true,
         created_at: user.created_at || new Date().toISOString(),
+        onboarding_completed: workerData?.onboarding_completed || false, // Add onboarding status
       },
     }, locale);
 

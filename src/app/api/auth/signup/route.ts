@@ -11,6 +11,7 @@ import {
 import { getUserByPhone, getUserByEmail, createUser } from '@/lib/db';
 import { isSupabaseReady } from '@/lib/supabase';
 import { generateOTP, sendOTP, storeOTP } from '@/lib/sms';
+import { generateAuthToken } from '@/lib/auth-session';
 
 function hashPassword(password: string): string {
   return createHash('sha256').update(password).digest('hex');
@@ -116,10 +117,19 @@ export async function POST(request: NextRequest) {
     storeOTP(phone, otp);
     await sendOTP(phone, otp, locale);
 
+    // Generate JWT token for authentication
+    const token = generateAuthToken({ 
+      user_id: userId, 
+      role: role as 'customer' | 'worker', 
+      phone: phone,
+      created_at: Date.now()
+    });
+
     return apiSuccess(
       {
         user_id: userId,
         role,
+        token, // JWT token
         otp_sent: true,
         debug_otp: process.env.NODE_ENV === 'development' ? otp : undefined,
       },

@@ -1,25 +1,29 @@
-import type { NextRequest } from 'next/server';
+import { NextRequest } from 'next/server';
+import jwt from 'jsonwebtoken';
 
-type Session = {
+export interface Session {
   user_id: string;
-  role: 'customer' | 'worker' | 'admin';
+  role: string;
   phone?: string;
   created_at: number;
-};
-
-declare global {
-  // eslint-disable-next-line no-var
-  var authSessions: Record<string, Session> | undefined;
 }
 
-export function storeAuthSession(token: string, session: Omit<Session, 'created_at'>) {
-  global.authSessions = global.authSessions || {};
-  global.authSessions[token] = { ...session, created_at: Date.now() };
+export function generateAuthToken(session: Session): string {
+  return jwt.sign(session, process.env.JWT_SECRET!, {
+    expiresIn: '7d'
+  });
 }
 
 export function getAuthSessionFromRequest(request: NextRequest): Session | null {
   const authHeader = request.headers.get('authorization') || '';
   const token = authHeader.startsWith('Bearer ') ? authHeader.slice('Bearer '.length) : '';
+  
   if (!token) return null;
-  return global.authSessions?.[token] || null;
+  
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as Session;
+    return decoded;
+  } catch (error) {
+    return null;
+  }
 }

@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createHash } from 'crypto';
 import {
   apiError,
@@ -6,10 +6,12 @@ import {
   getLocaleFromRequest,
   validationError,
   VALIDATION_MESSAGES,
+  SUCCESS_MESSAGES,
 } from '@/lib/api-utils';
-import { getUserByPhone, getUserByEmail } from '@/lib/db';
+import { getUserByPhone, getUserByEmail, createUser } from '@/lib/db';
 import { isSupabaseReady } from '@/lib/supabase';
 import { generateOTP, sendOTP, storeOTP } from '@/lib/sms';
+import { generateAuthToken } from '@/lib/auth-session';
 
 function hashPassword(password: string): string {
   return createHash('sha256').update(password).digest('hex');
@@ -104,11 +106,20 @@ export async function POST(request: NextRequest) {
     storeOTP(phoneNumber, otp);
     await sendOTP(phoneNumber, otp, locale);
 
+    // Generate temporary JWT token for login flow
+    const tempToken = generateAuthToken({ 
+      user_id: user.id, 
+      role: user.role, 
+      phone: user.phone,
+      created_at: Date.now()
+    });
+
     return apiSuccess(
       {
         user_id: user.id,
         role: user.role,
         phone: user.phone, // Include phone number for email login
+        temp_token: tempToken, // Temporary JWT token
         otp_sent: true,
         debug_otp: process.env.NODE_ENV === 'development' ? otp : undefined,
       },
