@@ -160,6 +160,7 @@ function LoginPage() {
         localStorage.setItem('pending_user_id', payload?.user_id || '');
         localStorage.setItem('pending_auth_action', 'login');
         localStorage.setItem('pending_password', password);
+        localStorage.setItem('auth_token', payload?.temp_token); // Store temp JWT token
 
         setMessage({ type: 'success', text: t.codeSent });
         

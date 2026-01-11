@@ -168,6 +168,7 @@ function SignUpPageInner() {
         localStorage.setItem('pending_phone', formData.phone);
         localStorage.setItem('pending_role', role);
         localStorage.setItem('pending_auth_action', 'signup');
+        localStorage.setItem('auth_token', payload?.token); // Store JWT token
         
         // Show debug OTP in development
         if (payload?.debug_otp) {

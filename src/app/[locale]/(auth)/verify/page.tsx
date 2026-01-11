@@ -10,7 +10,6 @@ import { Link, useRouter } from '@/lib/i18n';
 import { LanguageDropdown } from '@/components/LanguageDropdown';
 import { useLocale as useC74Locale } from '@/hooks/useLocale';
 import type { Locale } from '@/i18n-routing';
-import { storeAuthSession } from '@/lib/auth-session';
 
 const pageTranslations = {
   en: {
@@ -156,20 +155,21 @@ export default function VerifyOTPPage() {
         
         // Get role from pending data or from result
         const pendingRole = localStorage.getItem('pending_role');
-        const userRole = payload?.user?.role || pendingRole || 'customer';
+        const userRole = payload?.user?.role || pendingRole;
         
-        // Store auth token and user data with correct role
+        // Validate role exists
+        if (!userRole || !['customer', 'worker', 'admin'].includes(userRole)) {
+          console.error('❌ Invalid role detected:', userRole);
+          setMessage({ type: 'error', text: 'Invalid user role. Please try again.' });
+          setIsLoading(false);
+          return;
+        }
+        
+        // Store JWT auth token and user data with correct role
         localStorage.setItem('auth_token', payload?.token);
         localStorage.setItem('user_data', JSON.stringify({ ...payload?.user, role: userRole }));
 
-        // Register the session server-side for API authentication
-        if (payload?.token && payload?.user) {
-          storeAuthSession(payload?.token, {
-            user_id: payload?.user.id,
-            role: userRole,
-            phone: payload?.user.phone,
-          });
-        }
+        // JWT tokens are stateless - no server-side registration needed
 
         setMessage({ type: 'success', text: t.codeSentAlert });
         
