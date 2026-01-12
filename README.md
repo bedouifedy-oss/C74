@@ -2,6 +2,28 @@
 
 A comprehensive Next.js-based worker marketplace platform connecting customers with verified service professionals.
 
+## 📸 Screenshots
+
+### **Home Page**
+![Home Page](docs/screenshots/Home.jpg)
+![Home Light](docs/screenshots/Home%20Light.jpg)
+
+### **Authentication**
+![Login](docs/screenshots/Login.jpg)
+![Signup](docs/screenshots/Signup.jpg)
+
+### **Customer Features**
+![Customer Dashboard](docs/screenshots/Customer%20Dashboard.jpg)
+![Customer Profile](docs/screenshots/Customer%20Profile.jpg)
+![Customer Job Offer](docs/screenshots/Customer%20Job%20Offer.jpg)
+![Customer Initiate Chat](docs/screenshots/Customer%20Initiate%20Chat.jpg)
+![Conversations](docs/screenshots/Conversations%20page.jpg)
+
+### **Worker Features**
+![Browse Workers](docs/screenshots/Browse%20Workers.jpg)
+![Orders](docs/screenshots/Orders.jpg)
+![Ratings and Feedbacks](docs/screenshots/Ratings%20and%20feedbacks.jpg)
+
 ## 🚀 Features
 
 ### **Customer Features**
